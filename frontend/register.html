@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<title>Register</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+
+:root{
+--page-bg:#ffffff;
+--surface:#FBFCF5;
+--surface-soft:#F3F5E8;
+--tone-soft:#D2DCB6;
+--tone-mid:#A1BC98;
+--tone-dark:#6E8068;
+--tone-deep:#566551;
+--text-main:#2F3A2F;
+--text-muted:#5D6A59;
+--blue-soft:#8FABD4;
+--blue-panel:#1A3D64;
+}
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+}
+
+body{
+min-height:100vh;
+background:var(--page-bg);
+display:flex;
+align-items:center;
+justify-content:center;
+padding:24px;
+color:var(--text-main);
+}
+
+body::before{
+content:"";
+position:fixed;
+inset:0;
+background:
+radial-gradient(circle at top left,rgba(143,171,212,0.18),transparent 30%),
+radial-gradient(circle at bottom right,rgba(210,220,182,0.2),transparent 30%),
+linear-gradient(180deg,#ffffff 0%,#ffffff 50%,#f8faf4 100%);
+z-index:-1;
+}
+
+.layout{
+width:min(980px,100%);
+display:grid;
+grid-template-columns:minmax(0,1fr) minmax(360px,420px);
+gap:22px;
+align-items:stretch;
+}
+
+.info-panel{
+background:linear-gradient(135deg,#8FABD4 0%,#9cb6de 55%,#7d9ed1 100%);
+border-radius:30px;
+padding:34px;
+color:white;
+box-shadow:0 24px 46px rgba(74,112,169,0.18);
+display:flex;
+flex-direction:column;
+justify-content:space-between;
+gap:20px;
+}
+
+.info-badge{
+display:inline-flex;
+padding:8px 12px;
+border-radius:999px;
+background:rgba(255,255,255,0.18);
+border:1px solid rgba(255,255,255,0.2);
+font-size:12px;
+font-weight:700;
+letter-spacing:0.08em;
+text-transform:uppercase;
+}
+
+.info-panel h1{
+font-size:38px;
+line-height:1.08;
+margin:14px 0 12px;
+}
+
+.info-panel p{
+font-size:15px;
+line-height:1.7;
+color:rgba(248,250,252,0.92);
+max-width:520px;
+}
+
+.info-points{
+display:flex;
+flex-direction:column;
+gap:12px;
+}
+
+.info-points span{
+padding:13px 14px;
+border-radius:16px;
+background:rgba(255,255,255,0.14);
+border:1px solid rgba(255,255,255,0.16);
+font-size:14px;
+}
+
+.form-card{
+background:rgba(251,252,245,0.96);
+border:1px solid rgba(161,188,152,0.16);
+border-radius:30px;
+padding:30px;
+box-shadow:0 18px 40px rgba(86,101,81,0.08);
+display:flex;
+flex-direction:column;
+justify-content:center;
+}
+
+.form-card h2{
+font-size:30px;
+color:var(--tone-deep);
+margin-bottom:10px;
+}
+
+.form-card p{
+font-size:14px;
+line-height:1.6;
+color:var(--text-muted);
+margin-bottom:22px;
+}
+
+.field{
+margin-bottom:14px;
+}
+
+.field label{
+display:block;
+font-size:13px;
+font-weight:700;
+color:var(--tone-deep);
+margin-bottom:8px;
+}
+
+.field input{
+width:100%;
+padding:13px 14px;
+border-radius:14px;
+border:1px solid rgba(161,188,152,0.24);
+background:#ffffff;
+font-size:14px;
+color:var(--text-main);
+outline:none;
+transition:0.2s ease;
+}
+
+.field input:focus{
+border-color:var(--blue-soft);
+box-shadow:0 0 0 4px rgba(143,171,212,0.14);
+}
+
+.actions{
+display:flex;
+flex-direction:column;
+gap:12px;
+margin-top:8px;
+}
+
+.actions button{
+width:100%;
+padding:13px 14px;
+border:none;
+border-radius:14px;
+background:var(--blue-panel);
+color:white;
+font-size:15px;
+font-weight:700;
+cursor:pointer;
+box-shadow:0 14px 24px rgba(26,61,100,0.18);
+transition:0.2s ease;
+}
+
+.actions button:hover{
+transform:translateY(-1px);
+box-shadow:0 16px 28px rgba(26,61,100,0.22);
+}
+
+.helper-links{
+display:flex;
+justify-content:space-between;
+align-items:center;
+gap:10px;
+flex-wrap:wrap;
+margin-top:10px;
+}
+
+.helper-links a{
+text-decoration:none;
+font-size:14px;
+font-weight:700;
+color:var(--blue-panel);
+}
+
+#msg{
+min-height:22px;
+font-size:14px;
+font-weight:700;
+color:var(--tone-deep);
+}
+
+@media (max-width: 900px){
+.layout{
+grid-template-columns:1fr;
+}
+}
+
+@media (max-width: 600px){
+body{
+padding:16px;
+}
+
+.info-panel,
+.form-card{
+border-radius:22px;
+padding:22px;
+}
+
+.info-panel h1{
+font-size:30px;
+}
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="layout">
+<div class="info-panel">
+<div>
+<div class="info-badge">Create Account</div>
+<h1>Join the note sharing platform with a cleaner start.</h1>
+<p>Create your account to upload notes, browse shared material, and keep your study resources in one organized place.</p>
+</div>
+
+<div class="info-points">
+<span>Upload and manage your own study notes</span>
+<span>Browse notes by course, semester, and subject</span>
+<span>Build your personal academic resource space</span>
+</div>
+</div>
+
+<div class="form-card">
+<h2>Register</h2>
+<p>Fill in your details to create a new account.</p>
+
+<div class="field">
+<label for="name">Full Name</label>
+<input id="name" placeholder="Enter your name">
+</div>
+
+<div class="field">
+<label for="email">Email Address</label>
+<input id="email" type="email" placeholder="Enter your email">
+</div>
+
+<div class="field">
+<label for="password">Password</label>
+<input id="password" type="password" placeholder="Create a password">
+</div>
+
+<div class="actions">
+<button onclick="register()">Create Account</button>
+<p id="msg"></p>
+<div class="helper-links">
+<a href="login.html">Already have an account?</a>
+<a href="notes.html">Go to Home</a>
+</div>
+</div>
+</div>
+</div>
+
+<script>
+
+async function register(){
+
+const name = document.getElementById("name").value
+const email = document.getElementById("email").value
+const password = document.getElementById("password").value
+
+const res = await fetch("http://localhost:5000/register",{
+method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
+body:JSON.stringify({name,email,password})
+})
+
+const data = await res.text()
+
+document.getElementById("msg").innerText = data
+
+}
+
+</script>
+
+</body>
+
+</html>

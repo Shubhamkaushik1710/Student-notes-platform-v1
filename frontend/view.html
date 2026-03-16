@@ -1,0 +1,148 @@
+<!-- <!DOCTYPE html>
+<html>
+<head>
+<title>View Notes</title>
+
+<style>
+body{
+font-family: Arial;
+margin:0;
+background:#f5f7fb;
+}
+
+header{
+background:#2563eb;
+color:white;
+padding:15px;
+text-align:center;
+font-size:22px;
+}
+
+.pdf-container{
+width:90%;
+height:90vh;
+margin:auto;
+margin-top:20px;
+}
+
+iframe{
+width:100%;
+height:100%;
+border:none;
+}
+</style>
+
+</head>
+
+<body>
+
+<header>
+View Notes
+</header>
+
+
+<button onclick="goBack()" style="margin:20px;padding:10px 15px;background:#2563eb;color:white;border:none;border-radius:5px;cursor:pointer;">
+⬅ Back to Notes
+</button>
+
+<div class="pdf-container">
+<iframe id="pdfViewer"></iframe>
+</div>
+
+<script>
+
+const urlParams = new URLSearchParams(window.location.search)
+const file = urlParams.get("file")
+
+document.getElementById("pdfViewer").src =
+"http://localhost:5000/uploads/" + file
+
+function goBack(){
+window.location.href = "notes.html"
+}
+
+</script>
+
+</body>
+</html> -->
+
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>View Notes</title>
+
+<style>
+
+body{
+font-family:Arial;
+margin:0;
+background:#f5f7fb;
+}
+
+header{
+background:#2563eb;
+color:white;
+padding:15px;
+text-align:center;
+font-size:22px;
+}
+
+.pdf-container{
+width:90%;
+height:90vh;
+margin:auto;
+margin-top:20px;
+}
+
+iframe{
+width:100%;
+height:100%;
+border:none;
+}
+
+button{
+margin:20px;
+padding:10px 15px;
+background:#2563eb;
+color:white;
+border:none;
+border-radius:5px;
+cursor:pointer;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header>
+View Notes
+</header>
+
+<button onclick="goBack()">⬅ Back to Notes</button>
+
+<div class="pdf-container">
+<iframe id="pdfViewer"></iframe>
+</div>
+
+<script>
+
+const urlParams = new URLSearchParams(window.location.search)
+
+const file = urlParams.get("file")
+
+document.getElementById("pdfViewer").src =
+"http://localhost:5000/uploads/" + file
+
+function goBack(){
+window.location.href = "notes.html"
+}
+
+</script>
+
+</body>
+
+</html>
