@@ -87,6 +87,32 @@ line-height:1.08;
 margin:14px 0 12px;
 }
 
+.hero-title{
+max-width:540px;
+}
+
+.type-shell{
+display:inline-flex;
+align-items:center;
+gap:4px;
+min-height:1.2em;
+padding:0 2px;
+border-bottom:2px solid rgba(255,255,255,0.28);
+}
+
+.type-text{
+color:#fdfefe;
+text-shadow:0 10px 24px rgba(26,61,100,0.18);
+}
+
+.type-caret{
+width:3px;
+height:0.96em;
+border-radius:999px;
+background:rgba(255,255,255,0.92);
+animation:blink-caret 0.8s steps(1) infinite;
+}
+
 .info-panel p{
 font-size:15px;
 line-height:1.7;
@@ -106,6 +132,42 @@ border-radius:16px;
 background:rgba(255,255,255,0.14);
 border:1px solid rgba(255,255,255,0.16);
 font-size:14px;
+opacity:0;
+transform:translateY(16px);
+animation:float-in 0.7s ease forwards;
+}
+
+.info-points span:nth-child(1){
+animation-delay:0.15s;
+}
+
+.info-points span:nth-child(2){
+animation-delay:0.28s;
+}
+
+.info-points span:nth-child(3){
+animation-delay:0.41s;
+}
+
+.info-panel > div:first-child{
+animation:float-in 0.8s ease forwards;
+}
+
+@keyframes blink-caret{
+50%{
+opacity:0;
+}
+}
+
+@keyframes float-in{
+from{
+opacity:0;
+transform:translateY(16px);
+}
+to{
+opacity:1;
+transform:translateY(0);
+}
 }
 
 .form-card{
@@ -242,7 +304,7 @@ font-size:30px;
 <div class="info-panel">
 <div>
 <div class="info-badge">Welcome Back</div>
-<h1>Sign in and continue using your notes dashboard.</h1>
+<h1 class="hero-title">Sign in and continue with <span class="type-shell"><span class="type-text" id="typeText"></span><span class="type-caret" aria-hidden="true"></span></span></h1>
 <p>Access your uploaded notes, browse shared study material, and keep your learning resources organized in one place.</p>
 </div>
 
@@ -279,6 +341,46 @@ font-size:30px;
 </div>
 
 <script>
+
+const animatedPhrases = [
+"your notes dashboard",
+"shared study material",
+"smart exam prep",
+"your college notes"
+]
+
+const typeTarget = document.getElementById("typeText")
+
+let phraseIndex = 0
+let characterIndex = 0
+let isDeleting = false
+
+function runTypeAnimation(){
+const currentPhrase = animatedPhrases[phraseIndex]
+
+if(isDeleting){
+characterIndex -= 1
+}else{
+characterIndex += 1
+}
+
+typeTarget.textContent = currentPhrase.slice(0, characterIndex)
+
+let nextDelay = isDeleting ? 50 : 95
+
+if(!isDeleting && characterIndex === currentPhrase.length){
+nextDelay = 1500
+isDeleting = true
+}else if(isDeleting && characterIndex === 0){
+isDeleting = false
+phraseIndex = (phraseIndex + 1) % animatedPhrases.length
+nextDelay = 220
+}
+
+setTimeout(runTypeAnimation, nextDelay)
+}
+
+runTypeAnimation()
 
 async function login(){
 const email = document.getElementById("email").value

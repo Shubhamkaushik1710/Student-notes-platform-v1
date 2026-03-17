@@ -1,73 +1,89 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
 
 <title>BCA Notes</title>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
 
 <style>
 
 :root{
---page-bg:#F4F6E8;
---surface:#FBFCF5;
---surface-strong:#EEF2DE;
---tone-soft:#D2DCB6;
---tone-mid:#A1BC98;
---tone-dark:#6E8068;
---tone-deep:#566551;
---text-main:#2F3A2F;
---text-muted:#5D6A59;
---border-soft:rgba(110,128,104,0.2);
---shadow-soft:rgba(86,101,81,0.14);
---warm-accent:#8B7562;
+--page-top:#edf4ff;
+--page-bottom:#f7f2e8;
+--surface:#fffdf8;
+--surface-soft:#f7f9fd;
+--surface-muted:#eef3fa;
+--ink:#1f2a37;
+--ink-soft:#627083;
+--line:rgba(53,72,104,0.12);
+--primary:#163a63;
+--primary-soft:#4d76a7;
+--primary-pale:#d8e5f7;
+--accent:#f1c98e;
+--success:#5f8b60;
+--danger:#9a5c5c;
+--shadow-lg:0 28px 80px rgba(27,53,93,0.14);
+--shadow-md:0 18px 42px rgba(27,53,93,0.1);
+--shadow-sm:0 12px 24px rgba(27,53,93,0.08);
 }
 
 *{
 margin:0;
 padding:0;
 box-sizing:border-box;
-font-family:'Poppins',sans-serif;
 }
 
 body{
-background:#ffffff;
-color:var(--text-main);
+font-family:'Plus Jakarta Sans',sans-serif;
+background:
+radial-gradient(circle at 12% 12%,rgba(157,192,235,0.38),transparent 18%),
+radial-gradient(circle at 85% 10%,rgba(241,201,142,0.24),transparent 18%),
+linear-gradient(180deg,var(--page-top) 0%,#fbfcff 34%,var(--page-bottom) 100%);
+color:var(--ink);
+min-height:100vh;
 }
 
 body::before{
 content:"";
 position:fixed;
 inset:0;
-background:
-radial-gradient(circle at top left,rgba(210,220,182,0.38),transparent 36%),
-radial-gradient(circle at top right,rgba(161,188,152,0.2),transparent 30%),
-linear-gradient(180deg,#ffffff 0%,#ffffff 42%,#f7f8f1 100%);
+background-image:
+linear-gradient(rgba(255,255,255,0.24) 1px,transparent 1px),
+linear-gradient(90deg,rgba(255,255,255,0.24) 1px,transparent 1px);
+background-size:52px 52px;
+mask-image:linear-gradient(180deg,rgba(0,0,0,0.5),transparent 82%);
+pointer-events:none;
 z-index:-2;
 }
 
+.page{
+width:min(1180px,calc(100% - 32px));
+margin:18px auto 38px;
+}
+
 .navbar{
-padding:16px 20px 0;
 position:sticky;
-top:0;
-z-index:20;
+top:14px;
+z-index:30;
+backdrop-filter:blur(16px);
 }
 
 .navbar-inner{
-width:min(1100px,calc(100% - 8px));
-margin:0 auto;
-background:#EFECE3;
-color:var(--tone-deep);
-padding:14px 18px;
 display:flex;
 justify-content:space-between;
 align-items:center;
-gap:20px;
+gap:18px;
 flex-wrap:wrap;
-border-radius:24px;
-border:1px solid rgba(110,128,104,0.12);
-box-shadow:0 14px 32px var(--shadow-soft);
-backdrop-filter:blur(10px);
+padding:16px 18px;
+border-radius:28px;
+background:rgba(255,253,248,0.82);
+border:1px solid rgba(255,255,255,0.72);
+box-shadow:var(--shadow-md);
 }
 
 .brand{
@@ -77,39 +93,34 @@ gap:14px;
 }
 
 .brand-mark{
-width:46px;
-height:46px;
-border-radius:14px;
-background:linear-gradient(135deg,#ffffff 0%,#dfe7f4 100%);
-border:1px solid rgba(143,171,212,0.34);
+width:52px;
+height:52px;
+border-radius:18px;
 display:flex;
 align-items:center;
 justify-content:center;
-font-size:18px;
-font-weight:700;
-letter-spacing:0.04em;
-color:var(--tone-deep);
-box-shadow:0 10px 18px rgba(86,101,81,0.08);
-}
-
-.brand-copy{
-display:flex;
-flex-direction:column;
-gap:2px;
-}
-
-.logo{
+font-family:'Space Grotesk',sans-serif;
 font-size:20px;
-font-weight:600;
-line-height:1.1;
-color:var(--tone-deep);
+font-weight:700;
+letter-spacing:0.06em;
+color:var(--primary);
+background:linear-gradient(135deg,#ffffff 0%,#dbe8fb 100%);
+box-shadow:var(--shadow-sm);
 }
 
-.tagline{
+.brand-copy strong{
+display:block;
+font-size:18px;
+color:var(--primary);
+}
+
+.brand-copy span{
+display:block;
+margin-top:4px;
 font-size:12px;
-color:var(--text-muted);
-letter-spacing:0.04em;
+letter-spacing:0.12em;
 text-transform:uppercase;
+color:var(--ink-soft);
 }
 
 .nav-links{
@@ -120,419 +131,575 @@ flex-wrap:wrap;
 }
 
 .nav-links a{
-color:var(--tone-deep);
 text-decoration:none;
-font-size:14px;
-font-weight:500;
-padding:10px 14px;
+padding:11px 15px;
 border-radius:999px;
-border:1px solid rgba(110,128,104,0.08);
-background:rgba(255,255,255,0.46);
-transition:background 0.2s ease,border-color 0.2s ease,transform 0.2s ease,color 0.2s ease,box-shadow 0.2s ease;
+font-size:14px;
+font-weight:700;
+color:var(--primary);
+background:rgba(255,255,255,0.7);
+border:1px solid rgba(53,72,104,0.08);
+transition:transform 0.2s ease,box-shadow 0.2s ease,background 0.2s ease,color 0.2s ease;
 }
 
 .nav-links a:hover{
-background:#1A3D64;
-border-color:#1A3D64;
-color:#ffffff;
 transform:translateY(-1px);
-box-shadow:0 10px 18px rgba(26,61,100,0.22);
+box-shadow:var(--shadow-sm);
 }
 
 .nav-links .nav-primary{
-background:var(--surface);
-color:var(--tone-deep);
-font-weight:600;
-box-shadow:0 8px 18px rgba(67,80,67,0.15);
+background:linear-gradient(135deg,#163a63 0%,#2f5c92 100%);
+color:#fffdf9;
+border-color:transparent;
 }
 
-.nav-links .nav-primary:hover{
-background:#1A3D64;
-border-color:#1A3D64;
-color:#ffffff;
-}
-
-.nav-links .nav-danger{
-background:#f7f4eb;
-border-color:rgba(139,117,98,0.18);
-color:var(--warm-accent);
-}
-
-.nav-links .nav-danger:hover{
-background:#1A3D64;
-border-color:#1A3D64;
-color:#ffffff;
+.nav-links .nav-muted{
+color:#7b5163;
 }
 
 .hero{
-position:relative;
-padding:18px 20px 12px;
+margin-top:20px;
+display:grid;
+grid-template-columns:minmax(0,1.2fr) minmax(280px,0.8fr);
+gap:20px;
 }
 
-.hero-shell{
-width:min(1100px,calc(100% - 32px));
-margin:0 auto;
-background:linear-gradient(135deg,#8FABD4 0%,#9bb5dc 45%,#7c9dd0 100%);
-border:1px solid rgba(26,61,100,0.14);
-border-radius:26px;
-padding:26px 28px;
-box-shadow:0 22px 44px rgba(74,112,169,0.18);
-display:grid;
-grid-template-columns:minmax(0,1.2fr) minmax(240px,0.8fr);
-gap:18px;
-align-items:center;
+.hero-main,
+.hero-side{
+border-radius:34px;
+box-shadow:var(--shadow-lg);
 overflow:hidden;
 position:relative;
 }
 
-.hero-shell::before{
+.hero-main{
+padding:34px;
+background:
+linear-gradient(135deg,rgba(18,52,92,0.98) 0%,rgba(46,90,144,0.95) 52%,rgba(125,163,210,0.9) 100%);
+color:#f8fbff;
+isolation:isolate;
+}
+
+.hero-main::before{
 content:"";
 position:absolute;
 inset:0;
 background:
-radial-gradient(circle at top right,rgba(255,255,255,0.16),transparent 24%),
-radial-gradient(circle at bottom left,rgba(239,236,227,0.18),transparent 22%),
-linear-gradient(180deg,rgba(255,255,255,0.04),transparent 55%);
+radial-gradient(circle at 84% 20%,rgba(255,255,255,0.18),transparent 16%),
+radial-gradient(circle at 18% 85%,rgba(255,255,255,0.12),transparent 18%),
+linear-gradient(180deg,rgba(255,255,255,0.08),transparent 54%);
 pointer-events:none;
 }
 
-.hero-copy{
-max-width:680px;
+.hero-main::after{
+content:"";
+position:absolute;
+top:-30%;
+bottom:-30%;
+left:-24%;
+width:180px;
+background:linear-gradient(90deg,rgba(255,255,255,0),rgba(255,255,255,0.22),rgba(255,255,255,0));
+pointer-events:none;
+transform:rotate(18deg);
+animation:hero-sweep 7s ease-in-out infinite;
+}
+
+.hero-main > *{
 position:relative;
 z-index:1;
 }
 
-.hero-kicker{
+.hero-badge{
 display:inline-flex;
 align-items:center;
-padding:7px 12px;
+gap:8px;
+padding:9px 14px;
 border-radius:999px;
-background:rgba(239,236,227,0.2);
-border:1px solid rgba(239,236,227,0.26);
-color:#f8fafc;
+background:rgba(255,255,255,0.12);
+border:1px solid rgba(255,255,255,0.14);
 font-size:12px;
-font-weight:600;
-letter-spacing:0.08em;
+font-weight:800;
+letter-spacing:0.12em;
 text-transform:uppercase;
-margin-bottom:12px;
 }
 
-.hero h1{
-font-size:32px;
-line-height:1.08;
-margin-bottom:10px;
-max-width:560px;
-color:#f8fafc;
+.hero-badge::before{
+content:"";
+width:8px;
+height:8px;
+border-radius:50%;
+background:#b9f0c4;
+box-shadow:0 0 0 6px rgba(185,240,196,0.14);
 }
 
-.hero p{
-font-size:15px;
-line-height:1.6;
-color:rgba(248,250,252,0.92);
-max-width:520px;
+.hero-main h1{
+margin-top:20px;
+font-family:'Space Grotesk',sans-serif;
+font-size:clamp(2.6rem,5vw,4.9rem);
+line-height:0.96;
+letter-spacing:-0.04em;
+max-width:680px;
+animation:slide-up 0.8s ease both;
 }
 
-.hero-actions{
+.hero-main h1 .line-break{
+display:block;
+}
+
+.swap-shell{
+display:inline-flex;
+align-items:flex-start;
+min-height:1.16em;
+overflow:hidden;
+padding:0 4px 4px 0;
+border-bottom:2px solid rgba(255,255,255,0.28);
+}
+
+.swap-word{
+display:inline-block;
+color:#fff6dd;
+text-shadow:0 14px 32px rgba(10,24,46,0.22);
+transition:transform 0.46s cubic-bezier(0.22,1,0.36,1),opacity 0.34s ease,filter 0.34s ease;
+}
+
+.swap-word.is-exiting{
+opacity:0;
+filter:blur(4px);
+transform:translateY(-110%);
+}
+
+.swap-word.is-entering{
+opacity:0;
+filter:blur(4px);
+transform:translateY(110%);
+}
+
+.hero-main p{
+margin-top:18px;
+max-width:590px;
+font-size:16px;
+line-height:1.8;
+color:rgba(248,251,255,0.84);
+animation:slide-up 0.8s ease both;
+animation-delay:0.12s;
+}
+
+.hero-chips{
 display:flex;
 gap:10px;
 flex-wrap:wrap;
-margin-top:14px;
+margin-top:20px;
 }
 
 .hero-chip{
-padding:8px 12px;
-border-radius:12px;
-background:rgba(255,255,255,0.14);
-border:1px solid rgba(255,255,255,0.16);
-color:#f8fafc;
+padding:9px 13px;
+border-radius:999px;
+background:rgba(255,255,255,0.12);
+border:1px solid rgba(255,255,255,0.14);
 font-size:12px;
-font-weight:500;
+font-weight:700;
+color:#f8fbff;
+opacity:0;
+transform:translateY(18px);
+animation:slide-up 0.65s ease forwards;
+}
+
+.hero-chip:nth-child(1){
+animation-delay:0.18s;
+}
+
+.hero-chip:nth-child(2){
+animation-delay:0.26s;
+}
+
+.hero-chip:nth-child(3){
+animation-delay:0.34s;
+}
+
+.hero-chip:nth-child(4){
+animation-delay:0.42s;
 }
 
 .hero-stats{
-display:flex;
-gap:12px;
-flex-wrap:wrap;
-margin-top:14px;
+display:grid;
+grid-template-columns:repeat(3,minmax(0,1fr));
+gap:14px;
+margin-top:26px;
 }
 
 .hero-stat{
-min-width:140px;
-padding:10px 12px;
-background:rgba(239,236,227,0.16);
-border:1px solid rgba(239,236,227,0.18);
-border-radius:16px;
+padding:16px 16px 18px;
+border-radius:22px;
+background:rgba(255,255,255,0.12);
+border:1px solid rgba(255,255,255,0.14);
+backdrop-filter:blur(14px);
+opacity:0;
+transform:translateY(22px);
+animation:slide-up 0.75s ease forwards;
+}
+
+.hero-stat:nth-child(1){
+animation-delay:0.24s;
+}
+
+.hero-stat:nth-child(2){
+animation-delay:0.36s;
+}
+
+.hero-stat:nth-child(3){
+animation-delay:0.48s;
 }
 
 .hero-stat strong{
 display:block;
-font-size:15px;
-color:#ffffff;
-margin-bottom:2px;
+font-family:'Space Grotesk',sans-serif;
+font-size:28px;
+margin-bottom:6px;
 }
 
 .hero-stat span{
-font-size:12px;
-color:rgba(248,250,252,0.88);
-}
-
-.hero-panel{
-position:relative;
-z-index:1;
-background:rgba(255,255,255,0.16);
-border:1px solid rgba(255,255,255,0.18);
-border-radius:22px;
-padding:18px;
-backdrop-filter:blur(10px);
-}
-
-.hero-panel-label{
-font-size:11px;
-font-weight:600;
-letter-spacing:0.08em;
-text-transform:uppercase;
-color:rgba(248,250,252,0.78);
-margin-bottom:10px;
-}
-
-.hero-panel-title{
-font-size:20px;
-font-weight:600;
-line-height:1.2;
-color:#ffffff;
-margin-bottom:10px;
-}
-
-.hero-panel-text{
 font-size:13px;
 line-height:1.6;
-color:rgba(248,250,252,0.86);
-margin-bottom:14px;
+color:rgba(248,251,255,0.8);
 }
 
-.hero-panel-points{
+.hero-side{
+padding:24px;
+background:rgba(255,253,248,0.84);
+border:1px solid rgba(255,255,255,0.78);
+backdrop-filter:blur(16px);
+display:flex;
+flex-direction:column;
+gap:16px;
+animation:slide-up 0.8s ease both;
+animation-delay:0.18s;
+}
+
+.side-kicker{
+display:inline-flex;
+padding:8px 12px;
+border-radius:999px;
+background:rgba(22,58,99,0.08);
+color:var(--primary);
+font-size:12px;
+font-weight:800;
+letter-spacing:0.1em;
+text-transform:uppercase;
+}
+
+.side-card{
+padding:18px;
+border-radius:24px;
+background:#ffffff;
+border:1px solid rgba(53,72,104,0.08);
+box-shadow:var(--shadow-sm);
+}
+
+.side-card strong{
+display:block;
+font-size:15px;
+color:var(--primary);
+margin-bottom:8px;
+}
+
+.side-card p{
+font-size:14px;
+line-height:1.7;
+color:var(--ink-soft);
+}
+
+.metric-grid{
+display:grid;
+grid-template-columns:repeat(2,minmax(0,1fr));
+gap:12px;
+}
+
+.metric{
+padding:16px;
+border-radius:20px;
+background:var(--surface-soft);
+border:1px solid rgba(53,72,104,0.08);
+}
+
+.metric span{
+display:block;
+font-size:12px;
+font-weight:700;
+letter-spacing:0.08em;
+text-transform:uppercase;
+color:var(--ink-soft);
+margin-bottom:8px;
+}
+
+.metric strong{
+display:block;
+font-family:'Space Grotesk',sans-serif;
+font-size:28px;
+color:var(--primary);
+}
+
+.dashboard{
+margin-top:20px;
+display:grid;
+grid-template-columns:minmax(300px,360px) minmax(0,1fr);
+gap:20px;
+align-items:start;
+}
+
+.panel{
+border-radius:30px;
+background:rgba(255,253,248,0.84);
+border:1px solid rgba(255,255,255,0.78);
+box-shadow:var(--shadow-md);
+backdrop-filter:blur(16px);
+}
+
+.filters{
+padding:22px;
+position:sticky;
+top:104px;
+}
+
+.panel-head{
+display:flex;
+justify-content:space-between;
+align-items:flex-start;
+gap:12px;
+flex-wrap:wrap;
+margin-bottom:18px;
+}
+
+.panel-head h2{
+font-family:'Space Grotesk',sans-serif;
+font-size:28px;
+letter-spacing:-0.03em;
+color:var(--primary);
+margin-bottom:6px;
+}
+
+.panel-head p{
+font-size:14px;
+line-height:1.7;
+color:var(--ink-soft);
+max-width:280px;
+}
+
+.panel-tag{
+padding:10px 13px;
+border-radius:999px;
+background:rgba(22,58,99,0.08);
+color:var(--primary);
+font-size:12px;
+font-weight:800;
+letter-spacing:0.08em;
+text-transform:uppercase;
+}
+
+.filter-stack{
+display:flex;
+flex-direction:column;
+gap:14px;
+}
+
+.field{
 display:flex;
 flex-direction:column;
 gap:8px;
 }
 
-.hero-panel-points span{
-padding:9px 10px;
-border-radius:12px;
-background:rgba(255,255,255,0.12);
-border:1px solid rgba(255,255,255,0.14);
-color:#f8fafc;
-font-size:12px;
+.field label{
+font-size:13px;
+font-weight:700;
+color:#314156;
 }
 
-.emoji{
-margin-right:6px;
-}
-
-.container{
-width:min(1100px,calc(100% - 32px));
-margin:0 auto 40px;
-position:relative;
-z-index:1;
-margin-top:18px;
-}
-
-.content-shell{
-background:rgba(251,252,245,0.8);
-border:1px solid rgba(161,188,152,0.16);
-border-radius:30px;
-padding:18px;
-box-shadow:0 22px 55px var(--shadow-soft);
-backdrop-filter:blur(14px);
-}
-
-.filter-panel{
-background:#4A70A9;
-padding:24px;
-border-radius:24px;
-box-shadow:0 24px 50px rgba(74,112,169,0.2);
-margin-bottom:26px;
-border:1px solid rgba(255,255,255,0.12);
-}
-
-.panel-header{
-display:flex;
-justify-content:space-between;
-align-items:flex-start;
-gap:18px;
-flex-wrap:wrap;
-margin-bottom:18px;
-}
-
-.filter-title{
-font-size:20px;
-font-weight:600;
-margin-bottom:6px;
-color:#f8fafc;
-}
-
-.filter-subtitle{
-color:rgba(248,250,252,0.82);
+.field input,
+.field select{
+width:100%;
+padding:15px 16px;
+border-radius:18px;
+border:1px solid rgba(53,72,104,0.12);
+background:#ffffff;
 font-size:14px;
-line-height:1.6;
-max-width:560px;
+font-family:'Plus Jakarta Sans',sans-serif;
+color:var(--ink);
+outline:none;
+box-shadow:0 10px 24px rgba(28,45,75,0.04);
+transition:border-color 0.2s ease,box-shadow 0.2s ease,transform 0.2s ease;
+}
+
+.field input:focus,
+.field select:focus{
+border-color:rgba(22,58,99,0.24);
+box-shadow:0 0 0 4px rgba(74,116,166,0.12);
+transform:translateY(-1px);
 }
 
 .filter-actions{
 display:flex;
-align-items:center;
 gap:10px;
 flex-wrap:wrap;
+margin-top:8px;
 }
 
-.panel-chip{
-padding:9px 12px;
-border-radius:999px;
-background:rgba(255,255,255,0.14);
-color:#f8fafc;
-font-size:13px;
-font-weight:600;
-}
-
-.ghost-btn{
-border:1px solid rgba(255,255,255,0.18);
-background:rgba(255,255,255,0.12);
-color:#f8fafc;
-padding:10px 14px;
-border-radius:999px;
-font-weight:600;
-cursor:pointer;
-transition:all 0.2s ease;
-}
-
-.ghost-btn:hover{
-border-color:rgba(255,255,255,0.3);
-color:#ffffff;
-background:rgba(255,255,255,0.2);
-}
-
-.filter-grid{
-display:grid;
-grid-template-columns:repeat(4,minmax(0,1fr));
-gap:14px;
-}
-
-.filter-grid input,
-.filter-grid select{
-width:100%;
-padding:13px 14px;
-border:1px solid rgba(255,255,255,0.2);
-border-radius:14px;
-background:rgba(255,255,255,0.94);
+.btn-inline{
+border:none;
+padding:12px 14px;
+border-radius:16px;
 font-size:14px;
-transition:border-color 0.2s ease,box-shadow 0.2s ease,background 0.2s ease;
-color:var(--text-main);
+font-weight:800;
+font-family:'Plus Jakarta Sans',sans-serif;
+cursor:pointer;
+transition:transform 0.2s ease,box-shadow 0.2s ease;
 }
 
-.filter-grid input:focus,
-.filter-grid select:focus{
-outline:none;
-border-color:#ffffff;
-box-shadow:0 0 0 4px rgba(255,255,255,0.16);
+.btn-inline:hover{
+transform:translateY(-1px);
+box-shadow:var(--shadow-sm);
+}
+
+.btn-primary{
+background:linear-gradient(135deg,#163a63 0%,#2f5c92 100%);
+color:#fffdf9;
+}
+
+.btn-soft{
 background:#ffffff;
+color:var(--primary);
+border:1px solid rgba(53,72,104,0.1);
 }
 
-.notes-section{
-background:#1A3D64;
-border:1px solid rgba(255,255,255,0.1);
-border-radius:24px;
+.filter-state{
+margin-top:18px;
+padding:16px;
+border-radius:22px;
+background:var(--surface-soft);
+border:1px solid rgba(53,72,104,0.08);
+}
+
+.filter-state strong{
+display:block;
+font-size:13px;
+letter-spacing:0.08em;
+text-transform:uppercase;
+color:var(--primary);
+margin-bottom:8px;
+}
+
+.filter-state p{
+font-size:14px;
+line-height:1.7;
+color:var(--ink-soft);
+}
+
+.notes-shell{
 padding:22px;
-box-shadow:0 18px 40px rgba(26,61,100,0.22);
 }
 
 .results-bar{
 display:flex;
 justify-content:space-between;
-align-items:center;
-gap:16px;
+align-items:flex-start;
+gap:14px;
 flex-wrap:wrap;
-margin-bottom:22px;
-padding-bottom:18px;
-border-bottom:1px solid rgba(255,255,255,0.12);
+margin-bottom:18px;
 }
 
 .results-copy h2{
-font-size:22px;
+font-family:'Space Grotesk',sans-serif;
+font-size:30px;
+letter-spacing:-0.03em;
+color:var(--primary);
 margin-bottom:6px;
-color:#f8fafc;
 }
 
 .results-copy p{
-color:rgba(248,250,252,0.8);
 font-size:14px;
+line-height:1.7;
+color:var(--ink-soft);
 }
 
-.results-info{
-color:#f8fafc;
-font-size:14px;
-font-weight:600;
-padding:10px 14px;
+.results-pill{
+padding:12px 15px;
 border-radius:999px;
-background:rgba(255,255,255,0.12);
-border:1px solid rgba(255,255,255,0.16);
+background:rgba(22,58,99,0.08);
+font-size:13px;
+font-weight:800;
+color:var(--primary);
 }
 
-#notes{
-display:flex;
-flex-direction:column;
+.notes-grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
 gap:18px;
 }
 
 .card{
-background:#fffffb;
+background:#ffffff;
+border:1px solid rgba(53,72,104,0.08);
+border-radius:28px;
 padding:20px;
-border-radius:14px;
-margin-bottom:0;
-box-shadow:0 12px 30px rgba(86,101,81,0.08);
-border:1px solid rgba(161,188,152,0.18);
+box-shadow:var(--shadow-sm);
 display:flex;
 flex-direction:column;
-gap:14px;
+gap:16px;
 transition:transform 0.2s ease,box-shadow 0.2s ease;
 }
 
 .card:hover{
-transform:translateY(-2px);
-box-shadow:0 18px 32px rgba(86,101,81,0.12);
+transform:translateY(-3px);
+box-shadow:0 18px 36px rgba(27,53,93,0.12);
 }
 
 .card-top{
 display:flex;
 justify-content:space-between;
 align-items:flex-start;
-gap:16px;
-flex-wrap:wrap;
+gap:14px;
 }
 
 .card h3{
-margin-bottom:8px;
-color:var(--tone-deep);
+font-size:20px;
+line-height:1.35;
+color:var(--primary);
+margin-bottom:10px;
 }
 
 .meta{
 display:flex;
-gap:8px;
 flex-wrap:wrap;
+gap:8px;
 }
 
 .meta span{
-background:#dde5c7;
-color:var(--tone-deep);
-padding:6px 10px;
+padding:7px 11px;
 border-radius:999px;
+background:var(--primary-pale);
+color:var(--primary);
 font-size:12px;
-font-weight:500;
+font-weight:800;
 }
 
 .likes{
-color:var(--text-muted);
 font-size:14px;
-margin-top:10px;
+color:var(--ink-soft);
+}
+
+.card-side{
+display:flex;
+flex-direction:column;
+align-items:flex-end;
+gap:10px;
+min-width:120px;
+}
+
+.note-badge{
+padding:8px 11px;
+border-radius:999px;
+background:#f9f2e6;
+font-size:12px;
+font-weight:800;
+color:#8b6734;
 }
 
 .action-buttons{
@@ -542,38 +709,36 @@ flex-wrap:wrap;
 }
 
 .btn{
-border:none;
-padding:9px 14px;
-border-radius:8px;
-cursor:pointer;
-font-weight:600;
-font-size:14px;
-color:#f8f8f2;
+display:inline-flex;
+align-items:center;
+justify-content:center;
 text-decoration:none;
-box-shadow:0 10px 18px rgba(86,101,81,0.12);
-}
-
-.btn-view{
-background:#1A3D64;
-}
-
-.btn-like{
-background:#1A3D64;
-color:#f8f8f2;
-}
-
-.btn-delete{
-background:#1A3D64;
-}
-
-.btn-comment{
-background:#1A3D64;
-color:#f8f8f2;
+border:none;
+padding:11px 14px;
+border-radius:14px;
+cursor:pointer;
+font-size:13px;
+font-weight:800;
+font-family:'Plus Jakarta Sans',sans-serif;
+transition:transform 0.2s ease,box-shadow 0.2s ease;
 }
 
 .btn:hover{
 transform:translateY(-1px);
-box-shadow:0 12px 20px rgba(86,101,81,0.16);
+box-shadow:var(--shadow-sm);
+}
+
+.btn-view,
+.btn-like,
+.btn-comment{
+background:linear-gradient(135deg,#163a63 0%,#2f5c92 100%);
+color:#fffdf9;
+}
+
+.btn-delete{
+background:#fff4f4;
+color:var(--danger);
+border:1px solid rgba(154,92,92,0.14);
 }
 
 .comment-row{
@@ -584,86 +749,133 @@ flex-wrap:wrap;
 
 .comment-box{
 flex:1;
-min-width:220px;
-padding:10px;
-border-radius:8px;
-border:1px solid rgba(161,188,152,0.32);
-background:#fffef8;
-color:var(--text-main);
+min-width:180px;
+padding:13px 14px;
+border-radius:16px;
+border:1px solid rgba(53,72,104,0.12);
+background:var(--surface-soft);
+font-size:14px;
+font-family:'Plus Jakarta Sans',sans-serif;
+outline:none;
+}
+
+.comment-box:focus{
+border-color:rgba(22,58,99,0.24);
+box-shadow:0 0 0 4px rgba(74,116,166,0.12);
 }
 
 .comments{
-margin-top:8px;
 display:flex;
 flex-direction:column;
-gap:8px;
+gap:10px;
 }
 
 .comment{
-background:rgba(210,220,182,0.18);
-color:var(--text-main);
-padding:10px 12px;
-border-radius:8px;
+padding:12px 14px;
+border-radius:16px;
+background:#f6f9ff;
+border:1px solid rgba(77,118,167,0.12);
 font-size:14px;
-border:1px solid rgba(161,188,152,0.14);
+line-height:1.6;
+color:var(--ink-soft);
+}
+
+.comment-tag{
+display:inline-block;
+margin-right:8px;
+padding:4px 8px;
+border-radius:999px;
+background:rgba(22,58,99,0.08);
+font-size:11px;
+font-weight:800;
+letter-spacing:0.06em;
+text-transform:uppercase;
+color:var(--primary);
 }
 
 .empty-state{
-background:linear-gradient(180deg,#fcfdf7,#f4f6e8);
-padding:38px 28px;
-border-radius:20px;
+padding:34px 24px;
+border-radius:24px;
 text-align:center;
-color:var(--text-muted);
-box-shadow:none;
-border:1px dashed rgba(110,128,104,0.28);
+background:linear-gradient(180deg,#ffffff 0%,#f7f9fd 100%);
+border:1px dashed rgba(53,72,104,0.18);
+color:var(--ink-soft);
 }
 
 .footer{
-background:linear-gradient(135deg,var(--tone-deep) 0%,var(--tone-dark) 100%);
-color:#f8f8f0;
+margin-top:28px;
+padding:24px;
 text-align:center;
-padding:20px;
-margin-top:50px;
-font-size:14px;
+border-radius:28px;
+background:linear-gradient(135deg,#163a63 0%,#2f5c92 100%);
+color:rgba(255,253,249,0.92);
+box-shadow:var(--shadow-md);
 }
 
-@media (max-width: 900px){
-.navbar-inner{
-padding:14px 16px;
+@keyframes slide-up{
+from{
+opacity:0;
+transform:translateY(18px);
+}
+to{
+opacity:1;
+transform:translateY(0);
+}
 }
 
-.hero-shell{
+@keyframes hero-sweep{
+0%{
+transform:translateX(-10%) rotate(18deg);
+opacity:0;
+}
+18%{
+opacity:0.9;
+}
+50%{
+transform:translateX(520%) rotate(18deg);
+opacity:0.42;
+}
+100%{
+transform:translateX(520%) rotate(18deg);
+opacity:0;
+}
+}
+
+@media (max-width: 1024px){
+.hero,
+.dashboard{
 grid-template-columns:1fr;
 }
 
-.hero h1{
-font-size:32px;
-}
-
-.filter-grid{
-grid-template-columns:repeat(2,minmax(0,1fr));
-}
-
-.results-bar{
-align-items:flex-start;
+.filters{
+position:static;
 }
 }
 
-@media (max-width: 600px){
-.navbar{
-padding:14px 14px 0;
+@media (max-width: 720px){
+.page{
+width:min(100% - 20px,1180px);
+margin:14px auto 26px;
 }
 
-.navbar-inner{
-padding:14px;
-border-radius:20px;
+.navbar-inner,
+.hero-main,
+.hero-side,
+.panel,
+.footer{
+border-radius:24px;
 }
 
-.hero h1{
-font-size:34px;
+.hero-main,
+.hero-side,
+.filters,
+.notes-shell,
+.footer{
+padding:20px;
 }
 
-.filter-grid{
+.hero-stats,
+.metric-grid{
 grid-template-columns:1fr;
 }
 
@@ -671,33 +883,31 @@ grid-template-columns:1fr;
 flex-direction:column;
 }
 
-.hero{
-padding:16px 16px 12px;
+.card-side{
+align-items:flex-start;
+min-width:0;
+}
 }
 
-.hero-shell{
-padding:20px 18px;
-border-radius:18px;
-grid-template-columns:1fr;
+@media (max-width: 480px){
+.nav-links{
+width:100%;
 }
 
-.container{
-margin-top:14px;
+.nav-links a{
+flex:1 1 auto;
+text-align:center;
 }
 
-.content-shell{
-padding:12px;
-border-radius:22px;
+.filter-actions,
+.action-buttons,
+.comment-row{
+flex-direction:column;
 }
 
-.filter-panel,
-.notes-section{
-padding:18px;
-border-radius:18px;
-}
-
-.panel-header{
-margin-bottom:14px;
+.btn,
+.btn-inline{
+width:100%;
 }
 }
 
@@ -707,13 +917,15 @@ margin-bottom:14px;
 
 <body>
 
+<div class="page">
+
 <div class="navbar">
 <div class="navbar-inner">
 <div class="brand">
 <div class="brand-mark">SN</div>
 <div class="brand-copy">
-<div class="logo">Student Note Sharing Platform</div>
-<div class="tagline">Organized study resources</div>
+<strong>Student Note Sharing Platform</strong>
+<span>Study dashboard</span>
 </div>
 </div>
 
@@ -723,100 +935,133 @@ margin-bottom:14px;
 <a href="profile.html">Profile</a>
 <a href="login.html">Login</a>
 <a href="register.html">Register</a>
-<a class="nav-danger" href="#" onclick="logout()">Logout</a>
+<a class="nav-muted" href="#" onclick="logout()">Logout</a>
 </div>
 </div>
 </div>
 
-<div class="hero">
+<section class="hero">
+<div class="hero-main">
+<div class="hero-badge">Notes library is ready</div>
+<h1>
+<span class="line-break">Find the right notes faster</span>
+<span class="line-break">and unlock</span>
+<span class="swap-shell"><span class="swap-word" id="swapText">focused revision</span></span>
+</h1>
+<p>Search by keyword, filter by course or semester, and jump straight into the exact material you need without digging through clutter.</p>
 
-<div class="hero-shell">
-<div class="hero-copy">
-<div class="hero-kicker">Notes Library</div>
-<h1>Find the right notes faster.</h1>
-<p>Search your library, filter by course and semester, and open the material you need without extra scrolling.</p>
-
-<div class="hero-actions">
-<span class="hero-chip">Keyword search</span>
+<div class="hero-chips">
+<span class="hero-chip">Smart search</span>
 <span class="hero-chip">Course filters</span>
-<span class="hero-chip">Semester filters</span>
+<span class="hero-chip">Comments and likes</span>
+<span class="hero-chip">Clean reading flow</span>
 </div>
 
 <div class="hero-stats">
 <div class="hero-stat">
-<strong>Fast</strong>
-<span>Find notes in seconds</span>
+<strong id="totalNotesStat">0</strong>
+<span>Total notes currently available</span>
 </div>
 <div class="hero-stat">
-<strong>Sorted</strong>
-<span>Course and semester based</span>
+<strong id="visibleNotesStat">0</strong>
+<span>Notes matching your active filters</span>
 </div>
 <div class="hero-stat">
-<strong>Simple</strong>
-<span>View, like, and comment easily</span>
+<strong id="subjectCountStat">0</strong>
+<span>Subjects represented in the library</span>
 </div>
 </div>
 </div>
 
-<div class="hero-panel">
-<div class="hero-panel-label">Study Flow</div>
-<div class="hero-panel-title">Browse less, study more.</div>
-<div class="hero-panel-text">Everything is arranged to help you jump straight to the note you need.</div>
-<div class="hero-panel-points">
-<span>Open notes instantly</span>
-<span>Filter cleanly by category</span>
-<span>Keep everything in one place</span>
+<aside class="hero-side">
+<span class="side-kicker">Overview</span>
+<div class="side-card">
+<strong>Focused study flow</strong>
+<p>Use the filter panel to narrow results, then open, like, or comment on notes from one smooth dashboard.</p>
 </div>
+
+<div class="metric-grid">
+<div class="metric">
+<span>Courses</span>
+<strong id="courseCountStat">0</strong>
+</div>
+<div class="metric">
+<span>Semesters</span>
+<strong id="semesterCountStat">0</strong>
 </div>
 </div>
 
+<div class="side-card">
+<strong>Current filter state</strong>
+<p id="filterSummary">Loading your notes and filters.</p>
 </div>
+</aside>
+</section>
 
-<div class="container">
-
-<div class="content-shell">
-<div class="filter-panel">
-<div class="panel-header">
+<section class="dashboard">
+<aside class="panel filters">
+<div class="panel-head">
 <div>
-<p class="filter-title">Find Notes Fast</p>
-<p class="filter-subtitle">Use smart filters to narrow down notes by course, semester, subject, or keyword in just a few clicks.</p>
+<h2>Refine Results</h2>
+<p>Use filters to narrow the list by title, course, semester, or subject.</p>
 </div>
-<div class="filter-actions">
-<span class="panel-chip">Study Dashboard</span>
-<button class="ghost-btn" id="clearFiltersBtn" type="button">Reset Filters</button>
+<span class="panel-tag">Quick filters</span>
 </div>
-</div>
-<div class="filter-grid">
+
+<div class="filter-stack">
+<div class="field">
+<label for="search">Search Notes</label>
 <input type="text" id="search" placeholder="Search by title, subject, course or semester">
+</div>
+
+<div class="field">
+<label for="courseFilter">Course</label>
 <select id="courseFilter">
 <option value="">All courses</option>
 </select>
+</div>
+
+<div class="field">
+<label for="semesterFilter">Semester</label>
 <select id="semesterFilter">
 <option value="">All semesters</option>
 </select>
+</div>
+
+<div class="field">
+<label for="subjectFilter">Subject</label>
 <select id="subjectFilter">
 <option value="">All subjects</option>
 </select>
 </div>
+<div class="filter-actions">
+<button class="btn-inline btn-primary" type="button" onclick="applyFilters()">Apply Filters</button>
+<button class="btn-inline btn-soft" id="clearFiltersBtn" type="button">Reset Filters</button>
+</div>
 </div>
 
-<div class="notes-section">
+<div class="filter-state">
+<strong>Active Filters</strong>
+<p id="activeFiltersText">All notes are visible right now.</p>
+</div>
+</aside>
+
+<div class="panel notes-shell">
 <div class="results-bar">
 <div class="results-copy">
 <h2>Available Notes</h2>
 <p>Browse recent uploads and open the material you need right away.</p>
 </div>
-<p class="results-info" id="resultsInfo">Loading notes...</p>
+<p class="results-pill" id="resultsInfo">Loading notes...</p>
 </div>
 
-<div id="notes"></div>
+<div id="notes" class="notes-grid"></div>
 </div>
-</div>
-</div>
+</section>
 
 <div class="footer">
-
-<p>&copy; 2026 BCA Notes | Created by Shubham</p>
+<p>&copy; 2026 Student Notes | Created by Shubham Kaushik and Nipun</p>
+</div>
 
 </div>
 
@@ -826,7 +1071,7 @@ const email = localStorage.getItem("user_email")
 
 if(!email){
 alert("Please Login first")
-window.location="login.html"
+window.location = "login.html"
 }
 
 const searchInput = document.getElementById("search")
@@ -835,6 +1080,20 @@ const semesterFilter = document.getElementById("semesterFilter")
 const subjectFilter = document.getElementById("subjectFilter")
 const resultsInfo = document.getElementById("resultsInfo")
 const clearFiltersBtn = document.getElementById("clearFiltersBtn")
+const notesContainer = document.getElementById("notes")
+const activeFiltersText = document.getElementById("activeFiltersText")
+const filterSummary = document.getElementById("filterSummary")
+const totalNotesStat = document.getElementById("totalNotesStat")
+const visibleNotesStat = document.getElementById("visibleNotesStat")
+const subjectCountStat = document.getElementById("subjectCountStat")
+const courseCountStat = document.getElementById("courseCountStat")
+const semesterCountStat = document.getElementById("semesterCountStat")
+const animatedPhrases = [
+"focused revision",
+"smart discovery",
+"cleaner study flow",
+"faster exam prep"
+]
 
 let allNotes = []
 const defaultCourses = ["BCA", "BBA", "BCom", "MCA"]
@@ -849,19 +1108,53 @@ const defaultSemesters = [
 "Semester 8"
 ]
 
+const swapText = document.getElementById("swapText")
+
+let phraseIndex = 0
+
+function runHeroSwap(){
+setTimeout(() => {
+swapText.classList.add("is-exiting")
+
+setTimeout(() => {
+phraseIndex = (phraseIndex + 1) % animatedPhrases.length
+swapText.textContent = animatedPhrases[phraseIndex]
+swapText.classList.remove("is-exiting")
+swapText.classList.add("is-entering")
+
+requestAnimationFrame(() => {
+requestAnimationFrame(() => {
+swapText.classList.remove("is-entering")
+})
+})
+
+runHeroSwap()
+},260)
+},2200)
+}
+
 function normalizeValue(value){
 return (value || "").toString().trim()
 }
 
+function escapeHTML(value){
+return normalizeValue(value)
+.replace(/&/g,"&amp;")
+.replace(/</g,"&lt;")
+.replace(/>/g,"&gt;")
+.replace(/"/g,"&quot;")
+.replace(/'/g,"&#39;")
+}
+
 function buildOptionList(items){
-return Array.from(new Set(items.map(normalizeValue).filter(Boolean))).sort((a,b)=>a.localeCompare(b))
+return Array.from(new Set(items.map(normalizeValue).filter(Boolean))).sort((a,b) => a.localeCompare(b))
 }
 
 function fillSelectOptions(selectElement, items, defaultLabel){
 const options = buildOptionList(items)
 
 selectElement.innerHTML = `<option value="">${defaultLabel}</option>` +
-options.map(item => `<option value="${item}">${item}</option>`).join("")
+options.map((item) => `<option value="${escapeHTML(item)}">${escapeHTML(item)}</option>`).join("")
 }
 
 function populateFilters(notes){
@@ -869,19 +1162,19 @@ const selectedCourse = courseFilter.value
 const selectedSemester = semesterFilter.value
 const selectedSubject = subjectFilter.value
 
-fillSelectOptions(courseFilter, [...defaultCourses, ...notes.map(note => note.course)], "All courses")
-fillSelectOptions(semesterFilter, [...defaultSemesters, ...notes.map(note => note.semester)], "All semesters")
-fillSelectOptions(subjectFilter, notes.map(note => note.subject), "All subjects")
+fillSelectOptions(courseFilter, [...defaultCourses, ...notes.map((note) => note.course)], "All courses")
+fillSelectOptions(semesterFilter, [...defaultSemesters, ...notes.map((note) => note.semester)], "All semesters")
+fillSelectOptions(subjectFilter, notes.map((note) => note.subject), "All subjects")
 
-if([...courseFilter.options].some(option => option.value === selectedCourse)){
+if([...courseFilter.options].some((option) => option.value === selectedCourse)){
 courseFilter.value = selectedCourse
 }
 
-if([...semesterFilter.options].some(option => option.value === selectedSemester)){
+if([...semesterFilter.options].some((option) => option.value === selectedSemester)){
 semesterFilter.value = selectedSemester
 }
 
-if([...subjectFilter.options].some(option => option.value === selectedSubject)){
+if([...subjectFilter.options].some((option) => option.value === selectedSubject)){
 subjectFilter.value = selectedSubject
 }
 }
@@ -898,7 +1191,7 @@ const subject = normalizeValue(note.subject).toLowerCase()
 const course = normalizeValue(note.course).toLowerCase()
 const semester = normalizeValue(note.semester).toLowerCase()
 
-const matchesSearch = !searchValue || [title, subject, course, semester].some(value => value.includes(searchValue))
+const matchesSearch = !searchValue || [title, subject, course, semester].some((value) => value.includes(searchValue))
 const matchesCourse = !selectedCourse || course === selectedCourse
 const matchesSemester = !selectedSemester || semester === selectedSemester
 const matchesSubject = !selectedSubject || subject === selectedSubject
@@ -914,16 +1207,46 @@ if(!items.length){
 return '<span>No subject</span>'
 }
 
-return items.map(item => `<span>${item}</span>`).join("")
+return items.map((item) => `<span>${escapeHTML(item)}</span>`).join("")
+}
+
+function updateDashboard(filteredNotes){
+const activeParts = []
+const searchValue = normalizeValue(searchInput.value)
+const selectedCourse = normalizeValue(courseFilter.value)
+const selectedSemester = normalizeValue(semesterFilter.value)
+const selectedSubject = normalizeValue(subjectFilter.value)
+
+if(searchValue){
+activeParts.push(`Search: "${searchValue}"`)
+}
+if(selectedCourse){
+activeParts.push(`Course: ${selectedCourse}`)
+}
+if(selectedSemester){
+activeParts.push(`Semester: ${selectedSemester}`)
+}
+if(selectedSubject){
+activeParts.push(`Subject: ${selectedSubject}`)
+}
+
+activeFiltersText.innerText = activeParts.length ? activeParts.join(" | ") : "All notes are visible right now."
+filterSummary.innerText = activeParts.length
+? `You are viewing ${filteredNotes.length} filtered note${filteredNotes.length === 1 ? "" : "s"} based on your current selection.`
+: "No filters are active, so you are browsing the full note library."
+
+totalNotesStat.innerText = allNotes.length
+visibleNotesStat.innerText = filteredNotes.length
+subjectCountStat.innerText = buildOptionList(allNotes.map((note) => note.subject)).length
+courseCountStat.innerText = buildOptionList([...defaultCourses, ...allNotes.map((note) => note.course)]).length
+semesterCountStat.innerText = buildOptionList([...defaultSemesters, ...allNotes.map((note) => note.semester)]).length
 }
 
 async function displayNotes(notes){
-
-const container = document.getElementById("notes")
-
 if(!notes.length){
-container.innerHTML = '<div class="empty-state">No notes match the selected filters.</div>'
+notesContainer.innerHTML = '<div class="empty-state">No notes match the selected filters. Try clearing one or two filters and check again.</div>'
 resultsInfo.innerText = "Showing 0 notes"
+updateDashboard(notes)
 return
 }
 
@@ -933,54 +1256,64 @@ loadLikes(note.id),
 loadComments(note.id)
 ])
 
-const commentHTML = comments.map((comment) => `
-<p class="comment">💬 ${comment.comment}</p>
+const commentHTML = comments.length
+? comments.map((comment) => `
+<p class="comment"><span class="comment-tag">Comment</span>${escapeHTML(comment.comment)}</p>
 `).join("")
+: '<p class="comment"><span class="comment-tag">Note</span>No comments yet. Start the discussion.</p>'
 
 return `
-<div class="card">
+<article class="card">
 <div class="card-top">
 <div>
-<h3>${note.title}</h3>
+<h3>${escapeHTML(note.title)}</h3>
 <div class="meta">${renderMeta(note)}</div>
-<p class="likes">👍 ${likes} Likes</p>
+</div>
+<div class="card-side">
+<span class="note-badge">Study Note</span>
+<p class="likes">${likes} like${likes === 1 ? "" : "s"}</p>
+</div>
 </div>
 
 <div class="action-buttons">
-<a class="btn btn-view" href="view.html?file=${note.file}">View</a>
-<button class="btn btn-like" onclick="likeNote(${note.id})">👍 Like</button>
+<a class="btn btn-view" href="view.html?file=${encodeURIComponent(note.file)}">View</a>
+<button class="btn btn-like" onclick="likeNote(${note.id})">Like</button>
 <button class="btn btn-delete" onclick="deleteNote(${note.id})">Delete</button>
-</div>
 </div>
 
 <div>
 <div class="comment-row">
-<input class="comment-box" id="comment-${note.id}" placeholder="💬 Write comment">
-<button class="btn btn-comment" onclick="addComment(${note.id})">💬 Comment</button>
+<input class="comment-box" id="comment-${note.id}" placeholder="Write a comment">
+<button class="btn btn-comment" onclick="addComment(${note.id})">Comment</button>
+</div>
 </div>
 
 <div class="comments">
 ${commentHTML}
 </div>
-</div>
-</div>
+</article>
 `
 }))
 
-container.innerHTML = cards.join("")
+notesContainer.innerHTML = cards.join("")
 resultsInfo.innerText = `Showing ${notes.length} note${notes.length === 1 ? "" : "s"}`
-
+updateDashboard(notes)
 }
 
 async function loadNotes(){
-
+try{
+resultsInfo.innerText = "Loading notes..."
 const res = await fetch("http://localhost:5000/notes")
 const data = await res.json()
 
 allNotes = data
 populateFilters(data)
 applyFilters()
-
+}catch(error){
+notesContainer.innerHTML = '<div class="empty-state">Unable to load notes right now. Please check your backend connection and try again.</div>'
+resultsInfo.innerText = "Loading failed"
+filterSummary.innerText = "The notes service could not be reached."
+}
 }
 
 function applyFilters(){
@@ -1001,10 +1334,10 @@ semesterFilter.addEventListener("change", applyFilters)
 subjectFilter.addEventListener("change", applyFilters)
 clearFiltersBtn.addEventListener("click", clearFilters)
 
+runHeroSwap()
 loadNotes()
 
 async function likeNote(id){
-
 await fetch("http://localhost:5000/like",{
 method:"POST",
 headers:{
@@ -1014,21 +1347,17 @@ body:JSON.stringify({note_id:id})
 })
 
 loadNotes()
-
 }
 
 async function deleteNote(id){
-
 await fetch("http://localhost:5000/delete/"+id,{
 method:"DELETE"
 })
 
 loadNotes()
-
 }
 
 async function addComment(id){
-
 const input = document.getElementById("comment-"+id)
 const comment = input.value.trim()
 
@@ -1050,30 +1379,25 @@ comment:comment
 
 input.value = ""
 loadNotes()
-
 }
 
 async function loadLikes(id){
-
 const res = await fetch("http://localhost:5000/likes/"+id)
 const data = await res.json()
 
 return data[0] ? data[0].total : 0
-
 }
 
 async function loadComments(id){
-
 const res = await fetch("http://localhost:5000/comments/"+id)
 const data = await res.json()
 
 return data
-
 }
 
 function logout(){
 localStorage.removeItem("user_email")
-window.location="login.html"
+window.location = "login.html"
 }
 
 </script>

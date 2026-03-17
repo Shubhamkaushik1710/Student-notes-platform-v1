@@ -203,17 +203,12 @@ notes: notes
 });
 
 
-app.use(express.static("../frontend"));
+// app.use(express.static("../frontend"));
 
-app.get("/",(req, res) => {
-  res.sendFile(__dirname+"/../frontend/login.html");
-});
-
-
-
+// app.get("/",(req, res) => {
+//   res.sendFile(__dirname+"/../frontend/login.html");
+// });
 
 app.listen(5000, () => {
 console.log("Server running on port 5000");
 });
-
-
