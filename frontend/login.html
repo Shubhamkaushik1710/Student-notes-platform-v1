@@ -386,7 +386,7 @@ async function login(){
 const email = document.getElementById("email").value
 const password = document.getElementById("password").value
 
-const res = await fetch("http://localhost:5000/login",{
+const res = await fetch("https://notes-backend-wtvl.onrender.com/login",{
 method:"POST",
 headers:{
 "Content-Type":"application/json"

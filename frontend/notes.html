@@ -1303,7 +1303,7 @@ updateDashboard(notes)
 async function loadNotes(){
 try{
 resultsInfo.innerText = "Loading notes..."
-const res = await fetch("http://localhost:5000/notes")
+const res = await fetch("https://notes-backend-wtvl.onrender.com/notes")
 const data = await res.json()
 
 allNotes = data
@@ -1338,7 +1338,7 @@ runHeroSwap()
 loadNotes()
 
 async function likeNote(id){
-await fetch("http://localhost:5000/like",{
+await fetch("https://notes-backend-wtvl.onrender.com/like",{
 method:"POST",
 headers:{
 "Content-Type":"application/json"
@@ -1350,7 +1350,7 @@ loadNotes()
 }
 
 async function deleteNote(id){
-await fetch("http://localhost:5000/delete/"+id,{
+await fetch("https://notes-backend-wtvl.onrender.com/delete/"+id,{
 method:"DELETE"
 })
 
@@ -1366,7 +1366,7 @@ alert("Please write a comment")
 return
 }
 
-await fetch("http://localhost:5000/add-comment",{
+await fetch("https://notes-backend-wtvl.onrender.com/comment",{
 method:"POST",
 headers:{
 "Content-Type":"application/json"
@@ -1382,14 +1382,14 @@ loadNotes()
 }
 
 async function loadLikes(id){
-const res = await fetch("http://localhost:5000/likes/"+id)
+const res = await fetch("https://notes-backend-wtvl.onrender.com/likes/"+id)
 const data = await res.json()
 
 return data[0] ? data[0].total : 0
 }
 
 async function loadComments(id){
-const res = await fetch("http://localhost:5000/comments/"+id)
+const res = await fetch("https://notes-backend-wtvl.onrender.com/comments/"+id)
 const data = await res.json()
 
 return data

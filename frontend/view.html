@@ -134,8 +134,10 @@ const urlParams = new URLSearchParams(window.location.search)
 
 const file = urlParams.get("file")
 
+// document.getElementById("pdfViewer").src =
+// "http://localhost:5000/uploads/" + file
 document.getElementById("pdfViewer").src =
-"http://localhost:5000/uploads/" + file
+"https://notes-backend-wtvl.onrender.com/uploads/" + file
 
 function goBack(){
 window.location.href = "notes.html"
