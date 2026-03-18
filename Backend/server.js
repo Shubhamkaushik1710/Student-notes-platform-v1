@@ -8,7 +8,7 @@ const app = express();
 
 // app.use(cors());
 app.use(cors({
-  origin: "https://studentnotesplatform.netlify.app"
+  origin: "https://note-sharing-platform.netlify.app"
 }));
 app.use(express.json());
 app.use("/uploads", express.static("uploads"));
