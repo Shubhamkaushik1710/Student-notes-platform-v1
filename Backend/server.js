@@ -166,16 +166,16 @@ res.send("Note Deleted");
 });
 
 app.post("/register", (req, res) => {
-const { name, email, password } = req.body;
-const sql = "INSERT INTO users(name,email,password) VALUES (?,?,?)";
-
-db.query(sql, [name, email, password], (err) => {
-if (err) {
-res.send("Error");
-} else {
-res.send("User Registered");
-}
-});
+  const { name, email, password } = req.body;
+  const sql = "INSERT INTO users(name,email,password) VALUES (?,?,?)";
+  db.query(sql, [name, email, password], (err) => {
+    if (err) {
+      console.log(err)  // ← yeh add karo
+      res.send("Error: " + err.message)  // ← exact error bhejo
+    } else {
+      res.send("User Registered")
+    }
+  });
 });
 
 app.post("/login", (req, res) => {
