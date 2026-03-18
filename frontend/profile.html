@@ -450,7 +450,7 @@ return items.map((item) => `<span>${item}</span>`).join("")
 
 async function loadProfile(){
 
-const res = await fetch("https://notes-backend-wtwl.onrender.com/profile/"+email)
+const res = await fetch("https://notes-backend-wtw1.onrender.com/profile/"+email)
 const data = await res.json()
 
 const totalNotes = data.notes.length
