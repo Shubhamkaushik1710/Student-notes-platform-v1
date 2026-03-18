@@ -138,7 +138,7 @@ res.send(result);
 });
 });
 
-app.post("/add-comment", (req, res) => {
+app.post("/comment", (req, res) => {
 const { note_id, comment } = req.body;
 const sql = "INSERT INTO comments(note_id,comment) VALUES (?,?)";
 
