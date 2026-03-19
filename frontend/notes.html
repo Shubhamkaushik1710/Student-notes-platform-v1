@@ -672,9 +672,17 @@ gap:8px;
 }
 
 .uploader{
-margin:0 0 10px;
-font-size:14px;
-color:var(--ink-soft);
+display:inline-flex;
+align-items:center;
+gap:8px;
+margin:0 0 12px;
+padding:8px 12px;
+border-radius:999px;
+background:linear-gradient(135deg,#eef4ff 0%,#f9fbff 100%);
+border:1px solid rgba(53,72,104,0.08);
+font-size:13px;
+font-weight:700;
+color:var(--primary);
 }
 
 .meta span{
@@ -687,13 +695,11 @@ font-weight:800;
 }
 
 .likes{
-font-size:14px;
-color:var(--ink-soft);
+margin:0;
 }
 
 .downloads{
-font-size:14px;
-color:var(--ink-soft);
+margin:0;
 }
 
 .card-side{
@@ -708,7 +714,30 @@ min-width:120px;
 display:flex;
 flex-direction:column;
 align-items:flex-end;
-gap:4px;
+gap:8px;
+}
+
+.metric-pill{
+display:inline-flex;
+align-items:center;
+justify-content:center;
+padding:8px 12px;
+border-radius:999px;
+font-size:12px;
+font-weight:800;
+letter-spacing:0.03em;
+border:1px solid rgba(53,72,104,0.08);
+background:#f7f9fd;
+color:var(--primary);
+}
+
+.metric-pill.likes{
+background:linear-gradient(135deg,#edf4ff 0%,#f8fbff 100%);
+}
+
+.metric-pill.downloads{
+background:linear-gradient(135deg,#eef8f2 0%,#f8fcf9 100%);
+color:#356246;
 }
 
 .note-badge{
@@ -904,6 +933,10 @@ flex-direction:column;
 .card-side{
 align-items:flex-start;
 min-width:0;
+}
+
+.card-metrics{
+align-items:flex-start;
 }
 }
 
@@ -1274,7 +1307,11 @@ loadLikes(note.id),
 loadComments(note.id)
 ])
 const downloadCount = Number(note.download_count) || 0
-const uploaderName = escapeHTML(note.uploader_name || note.user_email || "Unknown user")
+const rawUploaderName = normalizeValue(note.uploader_name)
+const safeUploaderName = rawUploaderName && !rawUploaderName.includes("@")
+? rawUploaderName
+: "Unknown user"
+const uploaderName = escapeHTML(safeUploaderName)
 
 const commentHTML = comments.length
 ? comments.map((comment) => `
@@ -1287,14 +1324,14 @@ return `
 <div class="card-top">
 <div>
 <h3>${escapeHTML(note.title)}</h3>
-<p class="uploader">Uploaded by ${uploaderName}</p>
+<p class="uploader">By ${uploaderName}</p>
 <div class="meta">${renderMeta(note)}</div>
 </div>
 <div class="card-side">
 <span class="note-badge">Study Note</span>
 <div class="card-metrics">
-<p class="likes">${likes} like${likes === 1 ? "" : "s"}</p>
-<p class="downloads">${downloadCount} download${downloadCount === 1 ? "" : "s"}</p>
+<p class="metric-pill likes">${likes} like${likes === 1 ? "" : "s"}</p>
+<p class="metric-pill downloads">${downloadCount} download${downloadCount === 1 ? "" : "s"}</p>
 </div>
 </div>
 </div>

@@ -129,7 +129,7 @@ app.get("/notes", (req, res) => {
 const sql = `
 SELECT
 notes.*,
-COALESCE(users.name, notes.user_email, 'Unknown user') AS uploader_name,
+COALESCE(NULLIF(TRIM(users.name), ''), 'Unknown user') AS uploader_name,
 COALESCE(download_totals.total, 0) AS download_count
 FROM notes
 LEFT JOIN users ON notes.user_email = users.email
