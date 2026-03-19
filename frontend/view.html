@@ -102,14 +102,30 @@ height:100%;
 border:none;
 }
 
-button{
+.actions{
+display:flex;
+gap:12px;
+flex-wrap:wrap;
 margin:20px;
+}
+
+.action-link,
+button{
 padding:10px 15px;
 background:#2563eb;
 color:white;
 border:none;
 border-radius:5px;
 cursor:pointer;
+text-decoration:none;
+font-size:14px;
+display:inline-flex;
+align-items:center;
+justify-content:center;
+}
+
+.download-link{
+background:#0f766e;
 }
 
 </style>
@@ -122,7 +138,10 @@ cursor:pointer;
 View Notes
 </header>
 
-<button onclick="goBack()">⬅ Back to Notes</button>
+<div class="actions">
+<button onclick="goBack()">Back to Notes</button>
+<a class="action-link download-link" id="downloadLink" href="#">Download Note</a>
+</div>
 
 <div class="pdf-container">
 <iframe id="pdfViewer"></iframe>
@@ -133,11 +152,20 @@ View Notes
 const urlParams = new URLSearchParams(window.location.search)
 
 const file = urlParams.get("file")
+const noteId = urlParams.get("noteId")
+const backendBaseUrl = "https://notes-backend-wtw1.onrender.com"
+const viewer = document.getElementById("pdfViewer")
+const downloadLink = document.getElementById("downloadLink")
 
-// document.getElementById("pdfViewer").src =
-// "http://localhost:5000/uploads/" + file
-document.getElementById("pdfViewer").src =
-"https://notes-backend-wtw1.onrender.com/uploads/" + file
+if(!file){
+window.location.href = "notes.html"
+throw new Error("Missing note file")
+}
+
+viewer.src = `${backendBaseUrl}/uploads/${encodeURIComponent(file)}`
+downloadLink.href = noteId
+? `${backendBaseUrl}/download/${encodeURIComponent(file)}?noteId=${encodeURIComponent(noteId)}`
+: `${backendBaseUrl}/download/${encodeURIComponent(file)}`
 
 function goBack(){
 window.location.href = "notes.html"

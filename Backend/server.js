@@ -27,8 +27,25 @@ if (err) {
 console.log(err);
 } else {
 console.log("Database Connected");
+ensureSupportTables();
 }
 });
+
+function ensureSupportTables() {
+const createDownloadTableSql = `
+CREATE TABLE IF NOT EXISTS note_downloads (
+id INT AUTO_INCREMENT PRIMARY KEY,
+note_id INT NOT NULL,
+created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+INDEX idx_note_downloads_note_id (note_id)
+)`;
+
+db.query(createDownloadTableSql, (err) => {
+if (err) {
+console.log("Unable to ensure note_downloads table", err);
+}
+});
+}
 
 const storage = multer.diskStorage({
 destination: function (req, file, cb) {
@@ -109,7 +126,19 @@ res.send("Note uploaded");
 });
 
 app.get("/notes", (req, res) => {
-const sql = "SELECT * FROM notes";
+const sql = `
+SELECT
+notes.*,
+COALESCE(users.name, notes.user_email, 'Unknown user') AS uploader_name,
+COALESCE(download_totals.total, 0) AS download_count
+FROM notes
+LEFT JOIN users ON notes.user_email = users.email
+LEFT JOIN (
+SELECT note_id, COUNT(*) AS total
+FROM note_downloads
+GROUP BY note_id
+) AS download_totals ON notes.id = download_totals.note_id
+ORDER BY notes.id DESC`;
 
 db.query(sql, (err, result) => {
 if (err) {
@@ -156,12 +185,68 @@ res.send(result);
 });
 });
 
+app.get("/download/:file", (req, res) => {
+const fileName = path.basename(req.params.file);
+const noteId = Number(req.query.noteId);
+const filePath = path.join(__dirname, "uploads", fileName);
+
+function sendFile() {
+res.download(filePath, fileName, (err) => {
+if (err && !res.headersSent) {
+console.log(err);
+res.status(500).send("Download failed");
+}
+});
+}
+
+if (!Number.isInteger(noteId) || noteId <= 0) {
+sendFile();
+return;
+}
+
+db.query("INSERT INTO note_downloads(note_id) VALUES (?)", [noteId], (err) => {
+if (err) {
+console.log(err);
+}
+
+sendFile();
+});
+});
+
 app.delete("/delete/:id", (req, res) => {
 const id = req.params.id;
-const sql = "DELETE FROM notes WHERE id=?";
+db.query("DELETE FROM note_downloads WHERE note_id=?", [id], (downloadErr) => {
+if (downloadErr) {
+console.log(downloadErr);
+res.send("Delete failed");
+return;
+}
 
-db.query(sql, [id], () => {
+db.query("DELETE FROM likes WHERE note_id=?", [id], (likesErr) => {
+if (likesErr) {
+console.log(likesErr);
+res.send("Delete failed");
+return;
+}
+
+db.query("DELETE FROM comments WHERE note_id=?", [id], (commentsErr) => {
+if (commentsErr) {
+console.log(commentsErr);
+res.send("Delete failed");
+return;
+}
+
+db.query("DELETE FROM notes WHERE id=?", [id], (noteErr) => {
+if (noteErr) {
+console.log(noteErr);
+res.send("Delete failed");
+return;
+}
+
 res.send("Note Deleted");
+});
+});
+});
 });
 });
 

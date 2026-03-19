@@ -671,6 +671,12 @@ flex-wrap:wrap;
 gap:8px;
 }
 
+.uploader{
+margin:0 0 10px;
+font-size:14px;
+color:var(--ink-soft);
+}
+
 .meta span{
 padding:7px 11px;
 border-radius:999px;
@@ -685,12 +691,24 @@ font-size:14px;
 color:var(--ink-soft);
 }
 
+.downloads{
+font-size:14px;
+color:var(--ink-soft);
+}
+
 .card-side{
 display:flex;
 flex-direction:column;
 align-items:flex-end;
 gap:10px;
 min-width:120px;
+}
+
+.card-metrics{
+display:flex;
+flex-direction:column;
+align-items:flex-end;
+gap:4px;
 }
 
 .note-badge{
@@ -1255,6 +1273,8 @@ const [likes, comments] = await Promise.all([
 loadLikes(note.id),
 loadComments(note.id)
 ])
+const downloadCount = Number(note.download_count) || 0
+const uploaderName = escapeHTML(note.uploader_name || note.user_email || "Unknown user")
 
 const commentHTML = comments.length
 ? comments.map((comment) => `
@@ -1267,16 +1287,20 @@ return `
 <div class="card-top">
 <div>
 <h3>${escapeHTML(note.title)}</h3>
+<p class="uploader">Uploaded by ${uploaderName}</p>
 <div class="meta">${renderMeta(note)}</div>
 </div>
 <div class="card-side">
 <span class="note-badge">Study Note</span>
+<div class="card-metrics">
 <p class="likes">${likes} like${likes === 1 ? "" : "s"}</p>
+<p class="downloads">${downloadCount} download${downloadCount === 1 ? "" : "s"}</p>
+</div>
 </div>
 </div>
 
 <div class="action-buttons">
-<a class="btn btn-view" href="view.html?file=${encodeURIComponent(note.file)}">View</a>
+<a class="btn btn-view" href="view.html?file=${encodeURIComponent(note.file)}&noteId=${encodeURIComponent(note.id)}">View</a>
 <button class="btn btn-like" onclick="likeNote(${note.id})">Like</button>
 <button class="btn btn-delete" onclick="deleteNote(${note.id})">Delete</button>
 </div>
