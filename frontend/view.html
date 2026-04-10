@@ -162,7 +162,7 @@ window.location.href = "notes.html"
 throw new Error("Missing note file")
 }
 
-viewer.src = `${backendBaseUrl}/uploads/${encodeURIComponent(file)}`
+viewer.src = decodeURIComponent(file)
 downloadLink.href = noteId
 ? `${backendBaseUrl}/download/${encodeURIComponent(file)}?noteId=${encodeURIComponent(noteId)}`
 : `${backendBaseUrl}/download/${encodeURIComponent(file)}`
