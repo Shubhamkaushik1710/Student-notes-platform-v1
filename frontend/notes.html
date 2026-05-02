@@ -160,8 +160,9 @@ color:#7b5163;
 .hero{
 margin-top:20px;
 display:grid;
-grid-template-columns:minmax(0,1.2fr) minmax(280px,0.8fr);
-gap:20px;
+grid-template-columns:minmax(0,1.35fr) minmax(280px,0.65fr);
+gap:18px;
+align-items:stretch;
 }
 
 .hero-main,
@@ -173,11 +174,14 @@ position:relative;
 }
 
 .hero-main{
-padding:34px;
-background:
-linear-gradient(135deg,rgba(18,52,92,0.98) 0%,rgba(46,90,144,0.95) 52%,rgba(125,163,210,0.9) 100%);
+padding:30px;
+background:#102f55;
 color:#f8fbff;
 isolation:isolate;
+display:grid;
+grid-template-columns:minmax(0,1fr) minmax(260px,0.52fr);
+gap:26px;
+min-height:470px;
 }
 
 .hero-main::before{
@@ -185,9 +189,8 @@ content:"";
 position:absolute;
 inset:0;
 background:
-radial-gradient(circle at 84% 20%,rgba(255,255,255,0.18),transparent 16%),
-radial-gradient(circle at 18% 85%,rgba(255,255,255,0.12),transparent 18%),
-linear-gradient(180deg,rgba(255,255,255,0.08),transparent 54%);
+linear-gradient(110deg,rgba(255,255,255,0.1) 0%,rgba(255,255,255,0.04) 40%,rgba(255,255,255,0) 41%),
+linear-gradient(135deg,#11355f 0%,#1d4a78 48%,#6f8eb4 100%);
 pointer-events:none;
 }
 
@@ -207,6 +210,139 @@ animation:hero-sweep 7s ease-in-out infinite;
 .hero-main > *{
 position:relative;
 z-index:1;
+}
+
+.hero-copy{
+display:flex;
+flex-direction:column;
+align-items:flex-start;
+justify-content:center;
+min-width:0;
+}
+
+.hero-visual{
+align-self:stretch;
+display:flex;
+align-items:center;
+justify-content:center;
+min-width:0;
+}
+
+.study-board{
+width:100%;
+max-width:330px;
+padding:16px;
+border-radius:26px;
+background:rgba(255,253,248,0.94);
+box-shadow:0 24px 60px rgba(4,19,40,0.24);
+color:var(--ink);
+}
+
+.board-top{
+display:flex;
+align-items:center;
+justify-content:space-between;
+gap:12px;
+padding-bottom:13px;
+border-bottom:1px solid rgba(53,72,104,0.1);
+}
+
+.board-title{
+font-size:13px;
+font-weight:800;
+color:var(--primary);
+}
+
+.board-status{
+padding:7px 9px;
+border-radius:999px;
+background:#eef8f2;
+color:#356246;
+font-size:11px;
+font-weight:800;
+}
+
+.board-list{
+display:flex;
+flex-direction:column;
+gap:11px;
+margin-top:14px;
+}
+
+.board-row{
+display:grid;
+grid-template-columns:38px minmax(0,1fr);
+gap:11px;
+align-items:center;
+padding:12px;
+border-radius:18px;
+background:#f7f9fd;
+border:1px solid rgba(53,72,104,0.08);
+}
+
+.board-icon{
+width:38px;
+height:38px;
+border-radius:14px;
+display:flex;
+align-items:center;
+justify-content:center;
+background:#dce9fa;
+color:var(--primary);
+font-size:15px;
+font-weight:900;
+}
+
+.board-row strong,
+.board-row span{
+display:block;
+white-space:nowrap;
+overflow:hidden;
+text-overflow:ellipsis;
+}
+
+.board-row strong{
+font-size:13px;
+color:var(--primary);
+margin-bottom:4px;
+}
+
+.board-row span{
+font-size:12px;
+color:var(--ink-soft);
+}
+
+.board-progress{
+margin-top:14px;
+padding:14px;
+border-radius:20px;
+background:#fff8ed;
+border:1px solid rgba(139,103,52,0.12);
+}
+
+.board-progress span{
+display:flex;
+justify-content:space-between;
+gap:10px;
+font-size:12px;
+font-weight:800;
+color:#8b6734;
+}
+
+.progress-track{
+height:8px;
+margin-top:10px;
+border-radius:999px;
+background:rgba(139,103,52,0.16);
+overflow:hidden;
+}
+
+.progress-track i{
+display:block;
+width:72%;
+height:100%;
+border-radius:999px;
+background:#d69b4d;
 }
 
 .hero-badge{
@@ -235,10 +371,10 @@ box-shadow:0 0 0 6px rgba(185,240,196,0.14);
 .hero-main h1{
 margin-top:20px;
 font-family:'Space Grotesk',sans-serif;
-font-size:clamp(2.6rem,5vw,4.9rem);
-line-height:0.96;
-letter-spacing:-0.04em;
-max-width:680px;
+font-size:clamp(2.25rem,4.7vw,4.55rem);
+line-height:1;
+letter-spacing:0;
+max-width:650px;
 animation:slide-up 0.8s ease both;
 }
 
@@ -278,7 +414,7 @@ transform:translateY(110%);
 margin-top:18px;
 max-width:590px;
 font-size:16px;
-line-height:1.8;
+line-height:1.75;
 color:rgba(248,251,255,0.84);
 animation:slide-up 0.8s ease both;
 animation-delay:0.12s;
@@ -324,12 +460,13 @@ animation-delay:0.42s;
 display:grid;
 grid-template-columns:repeat(3,minmax(0,1fr));
 gap:14px;
-margin-top:26px;
+margin-top:24px;
+width:100%;
 }
 
 .hero-stat{
-padding:16px 16px 18px;
-border-radius:22px;
+padding:15px 15px 17px;
+border-radius:20px;
 background:rgba(255,255,255,0.12);
 border:1px solid rgba(255,255,255,0.14);
 backdrop-filter:blur(14px);
@@ -353,7 +490,7 @@ animation-delay:0.48s;
 .hero-stat strong{
 display:block;
 font-family:'Space Grotesk',sans-serif;
-font-size:28px;
+font-size:30px;
 margin-bottom:6px;
 }
 
@@ -364,7 +501,7 @@ color:rgba(248,251,255,0.8);
 }
 
 .hero-side{
-padding:24px;
+padding:22px;
 background:rgba(255,253,248,0.84);
 border:1px solid rgba(255,255,255,0.78);
 backdrop-filter:blur(16px);
@@ -388,8 +525,8 @@ text-transform:uppercase;
 }
 
 .side-card{
-padding:18px;
-border-radius:24px;
+padding:17px;
+border-radius:20px;
 background:#ffffff;
 border:1px solid rgba(53,72,104,0.08);
 box-shadow:var(--shadow-sm);
@@ -416,7 +553,7 @@ gap:12px;
 
 .metric{
 padding:16px;
-border-radius:20px;
+border-radius:18px;
 background:var(--surface-soft);
 border:1px solid rgba(53,72,104,0.08);
 }
@@ -446,16 +583,144 @@ gap:20px;
 align-items:start;
 }
 
+.requests-panel{
+margin-top:20px;
+padding:22px;
+}
+
+.request-layout{
+display:grid;
+grid-template-columns:minmax(280px,0.78fr) minmax(0,1fr);
+gap:20px;
+align-items:start;
+}
+
+.request-form{
+display:flex;
+flex-direction:column;
+gap:13px;
+}
+
+.request-inline{
+display:grid;
+grid-template-columns:repeat(2,minmax(0,1fr));
+gap:12px;
+}
+
+.field textarea{
+width:100%;
+min-height:96px;
+resize:vertical;
+padding:14px 15px;
+border-radius:14px;
+border:1px solid rgba(53,72,104,0.12);
+background:#ffffff;
+font-size:14px;
+font-family:'Plus Jakarta Sans',sans-serif;
+color:var(--ink);
+outline:none;
+box-shadow:0 10px 24px rgba(28,45,75,0.04);
+transition:border-color 0.2s ease,box-shadow 0.2s ease,transform 0.2s ease;
+}
+
+.field textarea:focus{
+border-color:rgba(22,58,99,0.24);
+box-shadow:0 0 0 4px rgba(74,116,166,0.12);
+transform:translateY(-1px);
+}
+
+.request-feed{
+display:flex;
+flex-direction:column;
+gap:12px;
+}
+
+.request-card{
+padding:16px;
+border-radius:18px;
+background:#ffffff;
+border:1px solid rgba(53,72,104,0.08);
+box-shadow:var(--shadow-sm);
+}
+
+.request-top{
+display:flex;
+justify-content:space-between;
+align-items:flex-start;
+gap:12px;
+margin-bottom:10px;
+}
+
+.request-card h3{
+font-size:17px;
+line-height:1.35;
+color:var(--primary);
+}
+
+.requester{
+display:inline-flex;
+align-items:center;
+gap:8px;
+margin-top:8px;
+font-size:13px;
+font-weight:700;
+color:var(--ink-soft);
+}
+
+.request-meta{
+display:flex;
+flex-wrap:wrap;
+gap:8px;
+margin-top:10px;
+}
+
+.request-meta span{
+padding:7px 10px;
+border-radius:999px;
+background:var(--surface-soft);
+color:var(--primary);
+font-size:12px;
+font-weight:800;
+}
+
+.request-card p{
+margin-top:10px;
+font-size:14px;
+line-height:1.65;
+color:var(--ink-soft);
+}
+
+.request-date{
+flex:0 0 auto;
+padding:7px 10px;
+border-radius:999px;
+background:#f9f2e6;
+color:#8b6734;
+font-size:12px;
+font-weight:800;
+}
+
+.request-empty{
+padding:22px;
+border-radius:18px;
+background:linear-gradient(180deg,#ffffff 0%,#f7f9fd 100%);
+border:1px dashed rgba(53,72,104,0.18);
+color:var(--ink-soft);
+font-size:14px;
+line-height:1.7;
+}
+
 .panel{
-border-radius:30px;
+border-radius:24px;
 background:rgba(255,253,248,0.84);
 border:1px solid rgba(255,255,255,0.78);
 box-shadow:var(--shadow-md);
 backdrop-filter:blur(16px);
+overflow:hidden;
 }
 
 .filters{
-padding:22px;
+padding:20px;
 position:sticky;
 top:104px;
 }
@@ -466,13 +731,13 @@ justify-content:space-between;
 align-items:flex-start;
 gap:12px;
 flex-wrap:wrap;
-margin-bottom:18px;
+margin-bottom:16px;
 }
 
 .panel-head h2{
 font-family:'Space Grotesk',sans-serif;
-font-size:28px;
-letter-spacing:-0.03em;
+font-size:25px;
+letter-spacing:0;
 color:var(--primary);
 margin-bottom:6px;
 }
@@ -485,7 +750,7 @@ max-width:280px;
 }
 
 .panel-tag{
-padding:10px 13px;
+padding:9px 12px;
 border-radius:999px;
 background:rgba(22,58,99,0.08);
 color:var(--primary);
@@ -498,7 +763,7 @@ text-transform:uppercase;
 .filter-stack{
 display:flex;
 flex-direction:column;
-gap:14px;
+gap:13px;
 }
 
 .field{
@@ -516,8 +781,8 @@ color:#314156;
 .field input,
 .field select{
 width:100%;
-padding:15px 16px;
-border-radius:18px;
+padding:14px 15px;
+border-radius:14px;
 border:1px solid rgba(53,72,104,0.12);
 background:#ffffff;
 font-size:14px;
@@ -545,7 +810,7 @@ margin-top:8px;
 .btn-inline{
 border:none;
 padding:12px 14px;
-border-radius:16px;
+border-radius:14px;
 font-size:14px;
 font-weight:800;
 font-family:'Plus Jakarta Sans',sans-serif;
@@ -572,7 +837,7 @@ border:1px solid rgba(53,72,104,0.1);
 .filter-state{
 margin-top:18px;
 padding:16px;
-border-radius:22px;
+border-radius:18px;
 background:var(--surface-soft);
 border:1px solid rgba(53,72,104,0.08);
 }
@@ -593,7 +858,7 @@ color:var(--ink-soft);
 }
 
 .notes-shell{
-padding:22px;
+padding:0;
 }
 
 .results-bar{
@@ -602,13 +867,16 @@ justify-content:space-between;
 align-items:flex-start;
 gap:14px;
 flex-wrap:wrap;
-margin-bottom:18px;
+padding:20px 22px;
+margin-bottom:0;
+background:linear-gradient(180deg,rgba(255,255,255,0.74) 0%,rgba(247,249,253,0.66) 100%);
+border-bottom:1px solid rgba(53,72,104,0.08);
 }
 
 .results-copy h2{
 font-family:'Space Grotesk',sans-serif;
-font-size:30px;
-letter-spacing:-0.03em;
+font-size:28px;
+letter-spacing:0;
 color:var(--primary);
 margin-bottom:6px;
 }
@@ -631,13 +899,14 @@ color:var(--primary);
 .notes-grid{
 display:grid;
 grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
-gap:18px;
+gap:16px;
+padding:22px;
 }
 
 .card{
 background:#ffffff;
 border:1px solid rgba(53,72,104,0.08);
-border-radius:28px;
+border-radius:20px;
 padding:20px;
 box-shadow:var(--shadow-sm);
 display:flex;
@@ -659,7 +928,7 @@ gap:14px;
 }
 
 .card h3{
-font-size:20px;
+font-size:19px;
 line-height:1.35;
 color:var(--primary);
 margin-bottom:10px;
@@ -676,7 +945,7 @@ display:inline-flex;
 align-items:center;
 gap:8px;
 margin:0 0 12px;
-padding:8px 12px;
+padding:7px 10px;
 border-radius:999px;
 background:linear-gradient(135deg,#eef4ff 0%,#f9fbff 100%);
 border:1px solid rgba(53,72,104,0.08);
@@ -686,7 +955,7 @@ color:var(--primary);
 }
 
 .meta span{
-padding:7px 11px;
+padding:7px 10px;
 border-radius:999px;
 background:var(--primary-pale);
 color:var(--primary);
@@ -741,7 +1010,7 @@ color:#356246;
 }
 
 .note-badge{
-padding:8px 11px;
+padding:8px 10px;
 border-radius:999px;
 background:#f9f2e6;
 font-size:12px;
@@ -761,7 +1030,7 @@ align-items:center;
 justify-content:center;
 text-decoration:none;
 border:none;
-padding:11px 14px;
+padding:11px 13px;
 border-radius:14px;
 cursor:pointer;
 font-size:13px;
@@ -890,8 +1159,26 @@ opacity:0;
 
 @media (max-width: 1024px){
 .hero,
-.dashboard{
+.dashboard,
+.request-layout{
 grid-template-columns:1fr;
+}
+
+.hero-main{
+grid-template-columns:1fr;
+min-height:0;
+}
+
+.hero-copy{
+justify-content:flex-start;
+}
+
+.hero-visual{
+justify-content:flex-start;
+}
+
+.study-board{
+max-width:100%;
 }
 
 .filters{
@@ -916,14 +1203,30 @@ border-radius:24px;
 .hero-main,
 .hero-side,
 .filters,
-.notes-shell,
+.requests-panel,
 .footer{
 padding:20px;
+}
+
+.hero-main{
+padding:22px;
+}
+
+.notes-shell{
+padding:0;
+}
+
+.hero-visual{
+display:none;
 }
 
 .hero-stats,
 .metric-grid{
 grid-template-columns:1fr;
+}
+
+.notes-grid{
+padding:18px;
 }
 
 .card-top{
@@ -952,8 +1255,13 @@ text-align:center;
 
 .filter-actions,
 .action-buttons,
-.comment-row{
+.comment-row,
+.request-inline{
 flex-direction:column;
+}
+
+.request-inline{
+display:flex;
 }
 
 .btn,
@@ -993,6 +1301,7 @@ width:100%;
 
 <section class="hero">
 <div class="hero-main">
+<div class="hero-copy">
 <div class="hero-badge">Notes library is ready</div>
 <h1>
 <span class="line-break">Find the right notes faster</span>
@@ -1024,6 +1333,43 @@ width:100%;
 </div>
 </div>
 
+<div class="hero-visual" aria-hidden="true">
+<div class="study-board">
+<div class="board-top">
+<span class="board-title">Today Study Board</span>
+<span class="board-status">Live</span>
+</div>
+<div class="board-list">
+<div class="board-row">
+<span class="board-icon">01</span>
+<div>
+<strong>Search syllabus topic</strong>
+<span>Title, course, subject</span>
+</div>
+</div>
+<div class="board-row">
+<span class="board-icon">02</span>
+<div>
+<strong>Open best notes</strong>
+<span>View, like, comment</span>
+</div>
+</div>
+<div class="board-row">
+<span class="board-icon">03</span>
+<div>
+<strong>Revise with context</strong>
+<span>Latest uploads first</span>
+</div>
+</div>
+</div>
+<div class="board-progress">
+<span><b>Revision readiness</b><b>72%</b></span>
+<div class="progress-track"><i></i></div>
+</div>
+</div>
+</div>
+</div>
+
 <aside class="hero-side">
 <span class="side-kicker">Overview</span>
 <div class="side-card">
@@ -1047,6 +1393,62 @@ width:100%;
 <p id="filterSummary">Loading your notes and filters.</p>
 </div>
 </aside>
+</section>
+
+<section class="panel requests-panel">
+<div class="request-layout">
+<div>
+<div class="panel-head">
+<div>
+<h2>Request Notes</h2>
+<p>Ask classmates for a topic, subject, or semester notes. Everyone can see open requests here.</p>
+</div>
+<span class="panel-tag">Public board</span>
+</div>
+
+<form class="request-form" id="noteRequestForm">
+<div class="field">
+<label for="requestTitle">Needed Notes</label>
+<input type="text" id="requestTitle" placeholder="Example: DBMS unit 3 handwritten notes">
+</div>
+
+<div class="request-inline">
+<div class="field">
+<label for="requestCourse">Course</label>
+<input type="text" id="requestCourse" placeholder="BCA">
+</div>
+
+<div class="field">
+<label for="requestSemester">Semester</label>
+<input type="text" id="requestSemester" placeholder="Semester 4">
+</div>
+</div>
+
+<div class="field">
+<label for="requestSubject">Subject</label>
+<input type="text" id="requestSubject" placeholder="Subject name">
+</div>
+
+<div class="field">
+<label for="requestDetails">Extra Details</label>
+<textarea id="requestDetails" placeholder="Mention unit, chapter, teacher, or exam requirement"></textarea>
+</div>
+
+<button class="btn-inline btn-primary" type="submit">Request Notes</button>
+</form>
+</div>
+
+<div>
+<div class="results-bar">
+<div class="results-copy">
+<h2>Requested by Students</h2>
+<p>Recent note requests from the whole class community.</p>
+</div>
+<p class="results-pill" id="requestsInfo">Loading requests...</p>
+</div>
+<div class="request-feed" id="noteRequests"></div>
+</div>
+</div>
 </section>
 
 <section class="dashboard">
@@ -1134,6 +1536,14 @@ const clearFiltersBtn = document.getElementById("clearFiltersBtn")
 const notesContainer = document.getElementById("notes")
 const activeFiltersText = document.getElementById("activeFiltersText")
 const filterSummary = document.getElementById("filterSummary")
+const noteRequestForm = document.getElementById("noteRequestForm")
+const noteRequestsContainer = document.getElementById("noteRequests")
+const requestsInfo = document.getElementById("requestsInfo")
+const requestTitle = document.getElementById("requestTitle")
+const requestCourse = document.getElementById("requestCourse")
+const requestSemester = document.getElementById("requestSemester")
+const requestSubject = document.getElementById("requestSubject")
+const requestDetails = document.getElementById("requestDetails")
 const totalNotesStat = document.getElementById("totalNotesStat")
 const visibleNotesStat = document.getElementById("visibleNotesStat")
 const subjectCountStat = document.getElementById("subjectCountStat")
@@ -1261,6 +1671,34 @@ return '<span>No subject</span>'
 return items.map((item) => `<span>${escapeHTML(item)}</span>`).join("")
 }
 
+function formatRequestDate(value){
+if(!value){
+return "Just now"
+}
+
+const date = new Date(value)
+
+if(Number.isNaN(date.getTime())){
+return "Recently"
+}
+
+return date.toLocaleDateString("en-IN", {
+day:"2-digit",
+month:"short",
+year:"numeric"
+})
+}
+
+function renderRequestMeta(request){
+const items = [request.course, request.semester, request.subject].map(normalizeValue).filter(Boolean)
+
+if(!items.length){
+return '<span>Open request</span>'
+}
+
+return items.map((item) => `<span>${escapeHTML(item)}</span>`).join("")
+}
+
 function updateDashboard(filteredNotes){
 const activeParts = []
 const searchValue = normalizeValue(searchInput.value)
@@ -1377,6 +1815,91 @@ filterSummary.innerText = "The notes service could not be reached."
 }
 }
 
+async function loadNoteRequests(){
+try{
+requestsInfo.innerText = "Loading requests..."
+const res = await fetch("http://localhost:3000/note-requests")
+const requests = await res.json()
+
+if(!requests.length){
+noteRequestsContainer.innerHTML = '<div class="request-empty">No note requests yet. Be the first person to ask for notes.</div>'
+requestsInfo.innerText = "0 requests"
+return
+}
+
+noteRequestsContainer.innerHTML = requests.map((request) => {
+const requesterName = normalizeValue(request.requester_name) || "Unknown student"
+const details = normalizeValue(request.details)
+
+return `
+<article class="request-card">
+<div class="request-top">
+<div>
+<h3>${escapeHTML(request.title)}</h3>
+<span class="requester">Requested by ${escapeHTML(requesterName)}</span>
+</div>
+<span class="request-date">${formatRequestDate(request.created_at)}</span>
+</div>
+<div class="request-meta">${renderRequestMeta(request)}</div>
+${details ? `<p>${escapeHTML(details)}</p>` : ""}
+</article>
+`
+}).join("")
+
+requestsInfo.innerText = `${requests.length} request${requests.length === 1 ? "" : "s"}`
+}catch(error){
+noteRequestsContainer.innerHTML = '<div class="request-empty">Unable to load note requests right now.</div>'
+requestsInfo.innerText = "Loading failed"
+}
+}
+
+async function submitNoteRequest(event){
+event.preventDefault()
+
+const title = requestTitle.value.trim()
+
+if(!title){
+alert("Please enter which notes you need")
+return
+}
+
+const submitButton = noteRequestForm.querySelector("button[type='submit']")
+submitButton.disabled = true
+submitButton.innerText = "Requesting..."
+
+try{
+const res = await fetch("http://localhost:3000/note-request",{
+method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
+body:JSON.stringify({
+title:title,
+course:requestCourse.value.trim(),
+semester:requestSemester.value.trim(),
+subject:requestSubject.value.trim(),
+details:requestDetails.value.trim(),
+email:email
+})
+})
+
+const message = await res.text()
+
+if(!res.ok){
+alert(message || "Request failed")
+return
+}
+
+noteRequestForm.reset()
+loadNoteRequests()
+}catch(error){
+alert("Unable to submit request right now")
+}finally{
+submitButton.disabled = false
+submitButton.innerText = "Request Notes"
+}
+}
+
 function applyFilters(){
 displayNotes(getFilteredNotes())
 }
@@ -1394,9 +1917,11 @@ courseFilter.addEventListener("change", applyFilters)
 semesterFilter.addEventListener("change", applyFilters)
 subjectFilter.addEventListener("change", applyFilters)
 clearFiltersBtn.addEventListener("click", clearFilters)
+noteRequestForm.addEventListener("submit", submitNoteRequest)
 
 runHeroSwap()
 loadNotes()
+loadNoteRequests()
 
 async function likeNote(id){
 await fetch("http://localhost:3000/like",{

@@ -35,9 +35,29 @@ function ensureSupportTables() {
       INDEX idx_note_downloads_note_id (note_id)
     )`;
 
+  const createNoteRequestsTableSql = `
+    CREATE TABLE IF NOT EXISTS note_requests (
+      id INT AUTO_INCREMENT PRIMARY KEY,
+      title VARCHAR(255) NOT NULL,
+      course VARCHAR(100) DEFAULT '',
+      semester VARCHAR(100) DEFAULT '',
+      subject VARCHAR(150) DEFAULT '',
+      details TEXT,
+      user_email VARCHAR(255) NOT NULL,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      INDEX idx_note_requests_created_at (created_at),
+      INDEX idx_note_requests_user_email (user_email)
+    )`;
+
   db.query(createDownloadTableSql, (err) => {
     if (err) {
       console.log("Unable to ensure note_downloads table", err);
+    }
+  });
+
+  db.query(createNoteRequestsTableSql, (err) => {
+    if (err) {
+      console.log("Unable to ensure note_requests table", err);
     }
   });
 }
@@ -141,6 +161,59 @@ app.get("/notes", (req, res) => {
     } else {
       res.send(result);
     }
+  });
+});
+
+app.get("/note-requests", (req, res) => {
+  const sql = `
+    SELECT
+      note_requests.*,
+      COALESCE(NULLIF(TRIM(users.name), ''), note_requests.user_email) AS requester_name
+    FROM note_requests
+    LEFT JOIN users ON note_requests.user_email = users.email
+    ORDER BY note_requests.id DESC`;
+
+  db.query(sql, (err, result) => {
+    if (err) {
+      console.log(err);
+      res.status(500).send("Unable to load note requests");
+      return;
+    }
+
+    res.send(result);
+  });
+});
+
+app.post("/note-request", (req, res) => {
+  const title = (req.body.title || "").trim();
+  const course = (req.body.course || "").trim();
+  const semester = (req.body.semester || "").trim();
+  const subject = (req.body.subject || "").trim();
+  const details = (req.body.details || "").trim();
+  const email = (req.body.email || "").trim();
+
+  if (!email) {
+    res.status(401).send("User not logged in");
+    return;
+  }
+
+  if (!title) {
+    res.status(400).send("Please enter the notes you need");
+    return;
+  }
+
+  const sql = `
+    INSERT INTO note_requests(title,course,semester,subject,details,user_email)
+    VALUES (?,?,?,?,?,?)`;
+
+  db.query(sql, [title, course, semester, subject, details, email], (err) => {
+    if (err) {
+      console.log(err);
+      res.status(500).send("Request failed");
+      return;
+    }
+
+    res.send("Request added");
   });
 });
 
@@ -286,6 +359,36 @@ app.get("/profile/:email", (req, res) => {
 });
 
 const PORT = process.env.PORT || 3000;
+
+// Note request table
+db.query(`CREATE TABLE IF NOT EXISTS note_requests (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  needed_notes VARCHAR(200),
+  course VARCHAR(50),
+  semester VARCHAR(50),
+  subject VARCHAR(100),
+  extra_details TEXT,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+)`, (err) => { if(err) console.log(err); });
+
+// Submit note request
+app.post("/note-request", (req, res) => {
+  const { needed_notes, course, semester, subject, extra_details } = req.body;
+  const sql = "INSERT INTO note_requests(needed_notes,course,semester,subject,extra_details) VALUES (?,?,?,?,?)";
+  db.query(sql, [needed_notes, course, semester, subject, extra_details], (err) => {
+    if (err) { console.log(err); res.send("Request failed"); }
+    else { res.send("Request submitted"); }
+  });
+});
+
+// Get all note requests
+app.get("/note-requests", (req, res) => {
+  db.query("SELECT * FROM note_requests ORDER BY id DESC", (err, result) => {
+    if (err) { res.send(err); }
+    else { res.send(result); }
+  });
+});
+
 
 app.listen(PORT, () => {
   console.log("Server running on port " + PORT);
