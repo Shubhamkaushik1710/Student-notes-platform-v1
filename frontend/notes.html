@@ -1741,8 +1741,8 @@ return
 
 const cards = await Promise.all(notes.map(async (note) => {
 const [likes, comments] = await Promise.all([
-loadLikes(note.id),
-loadComments(note.id)
+loadLikes(note.id).catch(() => 0),
+loadComments(note.id).catch(() => [])
 ])
 const downloadCount = Number(note.download_count) || 0
 const rawUploaderName = normalizeValue(note.uploader_name)
@@ -1804,6 +1804,10 @@ try{
 resultsInfo.innerText = "Loading notes..."
 const res = await fetch("http://localhost:3000/notes")
 const data = await res.json()
+
+if(!Array.isArray(data)){
+throw new Error("Invalid notes response")
+}
 
 allNotes = data
 populateFilters(data)

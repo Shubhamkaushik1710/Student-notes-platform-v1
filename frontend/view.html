@@ -162,10 +162,13 @@ window.location.href = "notes.html"
 throw new Error("Missing note file")
 }
 
-viewer.src = decodeURIComponent(file)
+const fileName = file.split("/").pop()
+const fileUrl = `${backendBaseUrl}/uploads/${encodeURIComponent(fileName)}`
+
+viewer.src = fileUrl
 downloadLink.href = noteId
-? `${backendBaseUrl}/download/${encodeURIComponent(file)}?noteId=${encodeURIComponent(noteId)}`
-: `${backendBaseUrl}/download/${encodeURIComponent(file)}`
+? `${backendBaseUrl}/download/${encodeURIComponent(fileName)}?noteId=${encodeURIComponent(noteId)}`
+: `${backendBaseUrl}/download/${encodeURIComponent(fileName)}`
 
 function goBack(){
 window.location.href = "notes.html"

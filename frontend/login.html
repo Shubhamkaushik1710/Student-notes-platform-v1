@@ -95,14 +95,19 @@ max-width:540px;
 display:inline-flex;
 align-items:center;
 gap:4px;
+width:21ch;
+max-width:100%;
 min-height:1.2em;
 padding:0 2px;
 border-bottom:2px solid rgba(255,255,255,0.28);
+vertical-align:bottom;
 }
 
 .type-text{
 color:#fdfefe;
 text-shadow:0 10px 24px rgba(26,61,100,0.18);
+white-space:nowrap;
+overflow:hidden;
 }
 
 .type-caret{
@@ -244,9 +249,15 @@ box-shadow:0 14px 24px rgba(26,61,100,0.18);
 transition:0.2s ease;
 }
 
-.actions button:hover{
+.actions button:hover:not(:disabled){
 transform:translateY(-1px);
 box-shadow:0 16px 28px rgba(26,61,100,0.22);
+}
+
+.actions button:disabled{
+cursor:not-allowed;
+opacity:0.72;
+box-shadow:none;
 }
 
 .helper-links{
@@ -270,6 +281,15 @@ min-height:22px;
 font-size:14px;
 font-weight:700;
 color:var(--tone-deep);
+margin-bottom:0;
+}
+
+#msg.error{
+color:#b42318;
+}
+
+#msg.success{
+color:#1f7a45;
 }
 
 @media (max-width: 900px){
@@ -315,29 +335,29 @@ font-size:30px;
 </div>
 </div>
 
-<div class="form-card">
+<form class="form-card" id="loginForm" novalidate>
 <h2>Login</h2>
 <p>Enter your account details to continue.</p>
 
 <div class="field">
 <label for="email">Email Address</label>
-<input type="email" id="email" placeholder="Enter your email">
+<input type="email" id="email" placeholder="Enter your email" autocomplete="email" required>
 </div>
 
 <div class="field">
 <label for="password">Password</label>
-<input type="password" id="password" placeholder="Enter your password">
+<input type="password" id="password" placeholder="Enter your password" autocomplete="current-password" required>
 </div>
 
 <div class="actions">
-<button onclick="login()">Login</button>
-<p id="msg"></p>
+<button type="submit" id="loginButton">Login</button>
+<p id="msg" role="status" aria-live="polite"></p>
 <div class="helper-links">
 <a href="register.html">Create an account</a>
 <a href="notes.html">Go to Home</a>
  </div>
 </div>
-</div>
+</form>
 </div>
 
 <script>
@@ -350,12 +370,19 @@ const animatedPhrases = [
 ]
 
 const typeTarget = document.getElementById("typeText")
+const loginForm = document.getElementById("loginForm")
+const loginButton = document.getElementById("loginButton")
+const messageBox = document.getElementById("msg")
 
 let phraseIndex = 0
 let characterIndex = 0
 let isDeleting = false
 
 function runTypeAnimation(){
+if(!typeTarget){
+return
+}
+
 const currentPhrase = animatedPhrases[phraseIndex]
 
 if(isDeleting){
@@ -382,52 +409,83 @@ setTimeout(runTypeAnimation, nextDelay)
 
 runTypeAnimation()
 
-// async function login(){
-// const email = document.getElementById("email").value
-// const password = document.getElementById("password").value
+function showMessage(text,type){
+messageBox.innerText = text
+messageBox.className = type || ""
+}
 
-// const res = await fetch("http://localhost:3000/login",{
-// method:"POST",
-// headers:{
-// "Content-Type":"application/json"
-// },
-// body:JSON.stringify({email,password})
-// })
+function setLoading(isLoading){
+loginButton.disabled = isLoading
+loginButton.innerText = isLoading ? "Logging in..." : "Login"
+}
 
-// const data = await res.text()
+async function login(event){
+event.preventDefault()
 
-// if(data.includes("Login Success")){
-// localStorage.setItem("user_email",email)
-// document.getElementById("msg").innerText = "Login successful"
-// window.location = "notes.html"
-// }else{
-// document.getElementById("msg").innerText = "Invalid login"
-// }
-// }
-async function login(){
-const email = document.getElementById("email").value
-const password = document.getElementById("password").value
+if(loginButton.disabled){
+return
+}
 
+const emailInput = document.getElementById("email")
+const passwordInput = document.getElementById("password")
+const email = emailInput.value.trim()
+const password = passwordInput.value
+emailInput.value = email
+
+if(!email || !password){
+showMessage("Please enter both email and password.","error")
+return
+}
+
+if(!emailInput.checkValidity()){
+showMessage("Please enter a valid email address.","error")
+emailInput.focus()
+return
+}
+
+setLoading(true)
+showMessage("Checking your details...","")
+
+const controller = new AbortController()
+const timeoutId = setTimeout(() => controller.abort(), 10000)
+
+try{
 const res = await fetch("http://localhost:3000/login",{
 method:"POST",
 headers:{
 "Content-Type":"application/json"
 },
-body:JSON.stringify({email,password})
+body:JSON.stringify({email,password}),
+signal:controller.signal
 })
 
 const data = await res.text()
 
+if(!res.ok){
+throw new Error("Server returned an error")
+}
+
 if(data.includes("Login Success")){
 localStorage.setItem("user_email",email)
-
-// ✅ YEH LINE ADD KARO
+showMessage("Login successful. Redirecting...","success")
 window.location.href = "notes.html"
-
 }else{
-document.getElementById("msg").innerText = data
+showMessage(data || "Invalid email or password.","error")
+setLoading(false)
+}
+}catch(error){
+const message = error.name === "AbortError"
+? "Login request timed out. Please try again."
+: "Unable to connect to the server. Please check that the backend is running."
+
+showMessage(message,"error")
+setLoading(false)
+}finally{
+clearTimeout(timeoutId)
 }
 }
+
+loginForm.addEventListener("submit", login)
 
 </script>
 
