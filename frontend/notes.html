@@ -898,12 +898,15 @@ color:var(--primary);
 
 .notes-grid{
 display:grid;
-grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
-gap:16px;
+grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+gap:18px;
 padding:22px;
+perspective:1200px;
 }
 
 .card{
+position:relative;
+overflow:hidden;
 background:#ffffff;
 border:1px solid rgba(53,72,104,0.08);
 border-radius:20px;
@@ -912,12 +915,45 @@ box-shadow:var(--shadow-sm);
 display:flex;
 flex-direction:column;
 gap:16px;
-transition:transform 0.2s ease,box-shadow 0.2s ease;
+isolation:isolate;
+opacity:0;
+transform:translateY(18px) scale(0.98);
+animation:card-rise 0.58s ease forwards;
+animation-delay:calc(var(--card-index,0) * 55ms);
+transition:transform 0.24s ease,box-shadow 0.24s ease,border-color 0.24s ease;
+}
+
+.card::before{
+content:"";
+position:absolute;
+inset:0 0 auto;
+height:5px;
+background:linear-gradient(90deg,#163a63 0%,#8fabd4 48%,#a1bc98 100%);
+z-index:1;
+}
+
+.card::after{
+content:"";
+position:absolute;
+width:150px;
+height:150px;
+right:-80px;
+top:-80px;
+border-radius:50%;
+background:radial-gradient(circle,rgba(143,171,212,0.28),transparent 68%);
+z-index:-1;
+transition:transform 0.24s ease,opacity 0.24s ease;
 }
 
 .card:hover{
-transform:translateY(-3px);
-box-shadow:0 18px 36px rgba(27,53,93,0.12);
+transform:translateY(-6px) rotateX(1deg);
+border-color:rgba(53,72,104,0.15);
+box-shadow:0 24px 42px rgba(27,53,93,0.15);
+}
+
+.card:hover::after{
+transform:scale(1.2);
+opacity:0.9;
 }
 
 .card-top{
@@ -925,6 +961,26 @@ display:flex;
 justify-content:space-between;
 align-items:flex-start;
 gap:14px;
+}
+
+.card-main{
+min-width:0;
+}
+
+.note-mark{
+display:inline-flex;
+align-items:center;
+justify-content:center;
+width:38px;
+height:38px;
+border-radius:13px;
+margin-bottom:12px;
+background:linear-gradient(135deg,#163a63 0%,#315f8d 100%);
+box-shadow:0 12px 24px rgba(22,58,99,0.16);
+color:#fffdf9;
+font-size:13px;
+font-weight:900;
+letter-spacing:0.04em;
 }
 
 .card h3{
@@ -952,6 +1008,7 @@ border:1px solid rgba(53,72,104,0.08);
 font-size:13px;
 font-weight:700;
 color:var(--primary);
+max-width:100%;
 }
 
 .meta span{
@@ -961,6 +1018,12 @@ background:var(--primary-pale);
 color:var(--primary);
 font-size:12px;
 font-weight:800;
+transition:transform 0.2s ease,background 0.2s ease;
+}
+
+.card:hover .meta span{
+transform:translateY(-1px);
+background:#edf4ff;
 }
 
 .likes{
@@ -1012,10 +1075,11 @@ color:#356246;
 .note-badge{
 padding:8px 10px;
 border-radius:999px;
-background:#f9f2e6;
+background:linear-gradient(135deg,#f9f2e6 0%,#fff9ef 100%);
 font-size:12px;
 font-weight:800;
 color:#8b6734;
+box-shadow:inset 0 0 0 1px rgba(139,103,52,0.08);
 }
 
 .action-buttons{
@@ -1049,6 +1113,21 @@ box-shadow:var(--shadow-sm);
 .btn-comment{
 background:linear-gradient(135deg,#163a63 0%,#2f5c92 100%);
 color:#fffdf9;
+}
+
+.btn-view::before{
+content:"Open";
+font-size:11px;
+letter-spacing:0.08em;
+text-transform:uppercase;
+opacity:0.68;
+margin-right:7px;
+}
+
+.btn-like{
+background:linear-gradient(135deg,#eef4ff 0%,#f9fbff 100%);
+border:1px solid rgba(53,72,104,0.1);
+color:var(--primary);
 }
 
 .btn-delete{
@@ -1116,6 +1195,16 @@ text-align:center;
 background:linear-gradient(180deg,#ffffff 0%,#f7f9fd 100%);
 border:1px dashed rgba(53,72,104,0.18);
 color:var(--ink-soft);
+grid-column:1 / -1;
+box-shadow:var(--shadow-sm);
+animation:card-rise 0.45s ease forwards;
+}
+
+@keyframes card-rise{
+to{
+opacity:1;
+transform:translateY(0) scale(1);
+}
 }
 
 .footer{
@@ -1226,6 +1315,7 @@ grid-template-columns:1fr;
 }
 
 .notes-grid{
+grid-template-columns:1fr;
 padding:18px;
 }
 
@@ -1739,7 +1829,7 @@ updateDashboard(notes)
 return
 }
 
-const cards = await Promise.all(notes.map(async (note) => {
+const cards = await Promise.all(notes.map(async (note,index) => {
 const [likes, comments] = await Promise.all([
 loadLikes(note.id).catch(() => 0),
 loadComments(note.id).catch(() => [])
@@ -1758,9 +1848,10 @@ const commentHTML = comments.length
 : '<p class="comment"><span class="comment-tag">Note</span>No comments yet. Start the discussion.</p>'
 
 return `
-<article class="card">
+<article class="card" style="--card-index:${index % 10}">
 <div class="card-top">
-<div>
+<div class="card-main">
+<span class="note-mark">N${index + 1}</span>
 <h3>${escapeHTML(note.title)}</h3>
 <p class="uploader">By ${uploaderName}</p>
 <div class="meta">${renderMeta(note)}</div>
