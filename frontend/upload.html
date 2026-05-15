@@ -4,28 +4,31 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Upload Notes</title>
+<title>Upload Notes — Student Notes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 
 <style>
 :root{
---page:#dfc7b4;
---surface:#fbf7f2;
---surface-soft:#f8f1eb;
---primary:#30180b;
---primary-soft:#d9b891;
---green:#d9b891;
---green-dark:#2b170e;
---text:#2b170e;
---muted:#9b9087;
---danger:#b42318;
---shadow:0 28px 80px rgba(48,24,11,0.16);
+--page:#FFEBCC;
+--surface:#fdfcf0;
+--surface-soft:#fefcf0;
+--primary:#5a9fd4;
+--primary-soft:#BFDDF0;
+--green:#BFDDF0;
+--green-dark:#1e3a5f;
+--text:#1e3a5f;
+--muted:#5a7a9a;
+--danger:#c0392b;
+--shadow:0 28px 80px rgba(58,111,168,0.16);
 }
 
 *{
 margin:0;
 padding:0;
 box-sizing:border-box;
-font-family:Arial,sans-serif;
+font-family:'Plus Jakarta Sans',Arial,sans-serif;
 }
 
 body{
@@ -36,7 +39,7 @@ justify-content:center;
 padding:28px;
 background:
 radial-gradient(circle at 50% 105%,rgba(255,255,255,0.74),transparent 22%),
-linear-gradient(180deg,#1c1b19 0,#1c1b19 34px,#dfc7b4 34px,#ecd6c4 100%);
+linear-gradient(180deg,#3a6fa8 0,#3a6fa8 34px,#FFEBCC 34px,#FFF9D2 100%);
 color:var(--text);
 overflow-x:hidden;
 }
@@ -46,7 +49,7 @@ content:"";
 position:fixed;
 inset:-40%;
 background-image:
-radial-gradient(circle,rgba(48,24,11,0.12) 0 1px,transparent 1.5px),
+radial-gradient(circle,rgba(58,111,168,0.12) 0 1px,transparent 1.5px),
 radial-gradient(circle,rgba(217,184,145,0.24) 0 1px,transparent 1.5px);
 background-size:86px 86px,132px 132px;
 animation:bg-drift 22s linear infinite;
@@ -78,7 +81,7 @@ overflow:hidden;
 padding:34px;
 background:
 linear-gradient(180deg,rgba(255,255,255,0.3),transparent 26%),
-linear-gradient(135deg,#f8f1eb 0%,#fbf7f2 100%);
+linear-gradient(135deg,#fefcf0 0%,#fdfcf0 100%);
 color:var(--text);
 display:flex;
 flex-direction:column;
@@ -104,7 +107,7 @@ position:absolute;
 inset:auto -10% 14% auto;
 width:58%;
 height:2px;
-background:linear-gradient(90deg,transparent,rgba(48,24,11,0.16),transparent);
+background:linear-gradient(90deg,transparent,rgba(58,111,168,0.16),transparent);
 transform:rotate(-24deg);
 animation:line-sweep 5.5s ease-in-out infinite;
 }
@@ -120,7 +123,7 @@ display:inline-flex;
 padding:8px 12px;
 border-radius:999px;
 background:rgba(255,255,255,0.16);
-border:1px solid rgba(48,24,11,0.08);
+border:1px solid rgba(58,111,168,0.08);
 color:var(--text);
 font-size:12px;
 font-weight:800;
@@ -157,7 +160,7 @@ align-items:center;
 padding:13px;
 border-radius:18px;
 background:rgba(255,255,255,0.14);
-border:1px solid rgba(48,24,11,0.08);
+border:1px solid rgba(58,111,168,0.08);
 backdrop-filter:blur(8px);
 transform:translateY(14px);
 opacity:0;
@@ -199,7 +202,7 @@ color:var(--muted);
 
 .upload-card{
 background:rgba(255,255,255,0.94);
-border:1px solid rgba(48,24,11,0.08);
+border:1px solid rgba(58,111,168,0.08);
 padding:30px;
 animation-delay:0.08s;
 }
@@ -235,9 +238,9 @@ justify-content:center;
 white-space:nowrap;
 padding:10px 12px;
 border-radius:14px;
-background:rgba(48,24,11,0.05);
+background:rgba(58,111,168,0.05);
 color:var(--primary);
-border:1px solid rgba(48,24,11,0.1);
+border:1px solid rgba(58,111,168,0.1);
 text-decoration:none;
 font-size:13px;
 font-weight:800;
@@ -246,7 +249,7 @@ transition:0.2s ease;
 
 .back-home:hover{
 transform:translateY(-1px);
-box-shadow:0 12px 22px rgba(48,24,11,0.1);
+box-shadow:0 12px 22px rgba(58,111,168,0.1);
 }
 
 .field{
@@ -266,7 +269,7 @@ margin-bottom:8px;
 width:100%;
 padding:13px 14px;
 border-radius:15px;
-border:1px solid rgba(48,24,11,0.12);
+border:1px solid rgba(58,111,168,0.12);
 background:var(--surface);
 font-size:14px;
 color:var(--text);
@@ -286,8 +289,8 @@ position:relative;
 display:block;
 padding:18px;
 border-radius:18px;
-border:1px dashed rgba(48,24,11,0.18);
-background:linear-gradient(180deg,#fffaf5 0%,#f8f1eb 100%);
+border:1px dashed rgba(58,111,168,0.18);
+background:linear-gradient(180deg,#fdfcf0 0%,#fefcf0 100%);
 cursor:pointer;
 transition:0.2s ease;
 }
@@ -295,7 +298,7 @@ transition:0.2s ease;
 .file-drop:hover,
 .file-drop.has-file{
 border-color:var(--primary-soft);
-box-shadow:0 12px 26px rgba(48,24,11,0.08);
+box-shadow:0 12px 26px rgba(58,111,168,0.08);
 transform:translateY(-1px);
 }
 
@@ -318,11 +321,11 @@ height:42px;
 border-radius:14px;
 display:grid;
 place-items:center;
-background:linear-gradient(135deg,var(--primary) 0%,#5b3320 100%);
+background:linear-gradient(135deg,var(--primary) 0%,#4a8bc4 100%);
 color:white;
 font-size:20px;
 font-weight:900;
-box-shadow:0 12px 22px rgba(48,24,11,0.18);
+box-shadow:0 12px 22px rgba(58,111,168,0.18);
 }
 
 .file-copy strong{
@@ -343,18 +346,18 @@ width:100%;
 padding:14px;
 border:none;
 border-radius:16px;
-background:linear-gradient(135deg,var(--primary) 0%,#5b3320 100%);
+background:linear-gradient(135deg,var(--primary) 0%,#4a8bc4 100%);
 color:white;
 font-size:15px;
 font-weight:900;
 cursor:pointer;
-box-shadow:0 16px 26px rgba(48,24,11,0.18);
+box-shadow:0 16px 26px rgba(58,111,168,0.18);
 transition:0.2s ease;
 }
 
 .submit-btn:hover:not(:disabled){
 transform:translateY(-2px);
-box-shadow:0 20px 32px rgba(48,24,11,0.22);
+box-shadow:0 20px 32px rgba(58,111,168,0.22);
 }
 
 .submit-btn:disabled{
@@ -377,7 +380,7 @@ color:var(--danger);
 }
 
 #msg.success{
-color:#1f7a45;
+color:#4a8bc4;
 }
 
 @keyframes bg-drift{

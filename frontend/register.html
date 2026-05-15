@@ -2,30 +2,33 @@
 <html>
 
 <head>
-<title>Register</title>
+<title>Register — Student Notes</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
 
 <style>
 
 :root{
---page-bg:#dfc7b4;
---surface:#fbf7f2;
---surface-soft:#f8f1eb;
---tone-soft:#ead8c8;
---tone-mid:#d9b891;
---tone-dark:#7b6353;
---tone-deep:#2b170e;
---text-main:#2b170e;
---text-muted:#9b9087;
---blue-soft:#d9b891;
---blue-panel:#30180b;
+--page-bg:#FFEBCC;
+--surface:#fdfcf0;
+--surface-soft:#fefcf0;
+--tone-soft:#FFEBCC;
+--tone-mid:#BFDDF0;
+--tone-dark:#5a8a72;
+--tone-deep:#1e3a5f;
+--text-main:#1e3a5f;
+--text-muted:#5a7a9a;
+--blue-soft:#BFDDF0;
+--blue-panel:#5a9fd4;
 }
 
 *{
 margin:0;
 padding:0;
 box-sizing:border-box;
-font-family:Arial,sans-serif;
+font-family:'Plus Jakarta Sans',Arial,sans-serif;
 }
 
 body{
@@ -44,7 +47,7 @@ position:fixed;
 inset:0;
 background:
 radial-gradient(circle at 50% 105%,rgba(255,255,255,0.74),transparent 22%),
-linear-gradient(180deg,#1c1b19 0,#1c1b19 34px,#dfc7b4 34px,#ecd6c4 100%);
+linear-gradient(180deg,#3a6fa8 0,#3a6fa8 34px,#FFEBCC 34px,#FFF9D2 100%);
 z-index:-1;
 }
 
@@ -57,18 +60,18 @@ align-items:stretch;
 padding:8px;
 border-radius:24px;
 background:rgba(255,255,255,0.38);
-box-shadow:0 28px 80px rgba(48,24,11,0.16);
+box-shadow:0 28px 80px rgba(58,111,168,0.16);
 animation:float-in 0.8s ease forwards;
 }
 
 .info-panel{
 background:
 linear-gradient(180deg,rgba(255,255,255,0.3),transparent 26%),
-linear-gradient(135deg,#f8f1eb 0%,#fbf7f2 100%);
+linear-gradient(135deg,#fefcf0 0%,#fdfcf0 100%);
 border-radius:30px;
 padding:34px;
 color:var(--text-main);
-box-shadow:inset 0 0 0 1px rgba(48,24,11,0.08);
+box-shadow:inset 0 0 0 1px rgba(58,111,168,0.08);
 display:flex;
 flex-direction:column;
 justify-content:space-between;
@@ -80,7 +83,7 @@ display:inline-flex;
 padding:8px 12px;
 border-radius:999px;
 background:rgba(255,255,255,0.18);
-border:1px solid rgba(48,24,11,0.08);
+border:1px solid rgba(58,111,168,0.08);
 color:var(--tone-deep);
 font-size:12px;
 font-weight:700;
@@ -90,11 +93,11 @@ text-transform:uppercase;
 
 .info-panel h1{
 font-family:Georgia,serif;
-font-size:38px;
-line-height:1.08;
+font-size:clamp(30px,4.5vw,42px);
+line-height:1.06;
 margin:14px 0 12px;
 font-weight:500;
-letter-spacing:-0.04em;
+letter-spacing:-0.05em;
 }
 
 .info-panel p{
@@ -114,14 +117,14 @@ gap:12px;
 padding:13px 14px;
 border-radius:16px;
 background:rgba(255,255,255,0.14);
-border:1px solid rgba(48,24,11,0.08);
+border:1px solid rgba(58,111,168,0.08);
 color:var(--tone-deep);
 font-size:14px;
 }
 
 .form-card{
 background:rgba(255,249,243,0.96);
-border:1px solid rgba(48,24,11,0.08);
+border:1px solid rgba(58,111,168,0.08);
 border-radius:30px;
 padding:30px;
 box-shadow:inset 0 0 0 1px rgba(255,255,255,0.42);
@@ -132,7 +135,7 @@ justify-content:center;
 
 .form-card h2{
 font-family:Georgia,serif;
-font-size:30px;
+font-size:28px;
 color:var(--tone-deep);
 margin-bottom:10px;
 font-weight:500;
@@ -162,8 +165,8 @@ margin-bottom:8px;
 width:100%;
 padding:13px 14px;
 border-radius:14px;
-border:1px solid rgba(48,24,11,0.12);
-background:#fffaf5;
+border:1px solid rgba(58,111,168,0.12);
+background:#fdfcf0;
 font-size:14px;
 color:var(--text-main);
 outline:none;
@@ -171,7 +174,7 @@ transition:0.2s ease;
 }
 
 .field input:focus{
-border-color:var(--blue-soft);
+border-color:#BFDDF0;
 box-shadow:0 0 0 4px rgba(217,184,145,0.18);
 }
 
@@ -187,18 +190,18 @@ width:100%;
 padding:13px 14px;
 border:none;
 border-radius:14px;
-background:var(--blue-panel);
+background:var(--button);
 color:white;
 font-size:15px;
 font-weight:700;
 cursor:pointer;
-box-shadow:0 14px 24px rgba(48,24,11,0.18);
+box-shadow:0 14px 24px rgba(58,111,168,0.18);
 transition:0.2s ease;
 }
 
 .actions button:hover{
 transform:translateY(-1px);
-box-shadow:0 16px 28px rgba(48,24,11,0.22);
+box-shadow:0 16px 28px rgba(58,111,168,0.22);
 }
 
 .helper-links{
@@ -214,7 +217,7 @@ margin-top:10px;
 text-decoration:none;
 font-size:14px;
 font-weight:700;
-color:var(--blue-panel);
+color:var(--button);
 }
 
 #msg{
