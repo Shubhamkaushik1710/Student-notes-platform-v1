@@ -1436,7 +1436,7 @@ h1,h2,h3,h4,h5,h6{color:#111111 !important;}
 <div class="nav-right">
 <div class="nav-links">
 <a class="nav-primary" href="upload.html">Upload Notes</a>
-<a class="nav-muted" href="#" onclick="logout()">Logout</a>
+<a class="nav-muted" id="logoutLink" href="#" onclick="logout()">Logout</a>
 </div>
 </div>
 </nav>
@@ -1683,6 +1683,11 @@ const isLoggedIn = Boolean(email)
 const authLock = document.getElementById("authLock")
 const authLockMessage = document.getElementById("authLockMessage")
 const authLockLink = document.getElementById("authLockLink")
+const logoutLink = document.getElementById("logoutLink")
+
+if(!isLoggedIn){
+logoutLink.style.display = "none"
+}
 
 const searchInput = document.getElementById("search")
 const courseFilter = document.getElementById("courseFilter")
