@@ -12,6 +12,7 @@ app.use(express.json());
 app.use("/uploads", express.static("uploads"));
 
 const oauthStates = new Map();
+const userSessions = new Map();
 const frontendUrl = process.env.FRONTEND_URL || "http://localhost:5500/frontend";
 
 const db = mysql.createConnection({
@@ -134,7 +135,18 @@ function consumeOAuthState(state, provider) {
 function redirectAfterOAuth(res, redirectTo, email) {
   const url = new URL(redirectTo || `${frontendUrl}/notes.html`);
   url.searchParams.set("oauthEmail", email);
+  url.searchParams.set("authToken", createUserSession(email));
   res.redirect(url.toString());
+}
+
+function createUserSession(email) {
+  const token = crypto.randomBytes(32).toString("hex");
+  userSessions.set(token, email);
+  return token;
+}
+
+function isValidUserSession(email, token) {
+  return Boolean(token && userSessions.get(token) === email);
 }
 
 function sendOAuthSetupMessage(res, provider) {
@@ -524,34 +536,66 @@ app.get("/auth/github/callback", async (req, res) => {
 
 app.delete("/delete/:id", (req, res) => {
   const id = req.params.id;
-  db.query("DELETE FROM note_downloads WHERE note_id=?", [id], (downloadErr) => {
-    if (downloadErr) {
-      console.log(downloadErr);
-      res.send("Delete failed");
+  const email = (req.body.email || "").trim();
+  const authToken = (req.body.authToken || "").trim();
+
+  if (!email || !isValidUserSession(email, authToken)) {
+    res.status(401).send("Please login first to delete notes");
+    return;
+  }
+
+  db.query("SELECT user_email FROM notes WHERE id=?", [id], (selectErr, notes) => {
+    if (selectErr) {
+      console.log(selectErr);
+      res.status(500).send("Delete failed");
       return;
     }
 
-    db.query("DELETE FROM likes WHERE note_id=?", [id], (likesErr) => {
-      if (likesErr) {
-        console.log(likesErr);
-        res.send("Delete failed");
+    if (!notes.length) {
+      res.status(404).send("Note not found");
+      return;
+    }
+
+    if (notes[0].user_email !== email) {
+      res.status(403).send("You can only delete notes you uploaded");
+      return;
+    }
+
+    db.query("DELETE FROM note_downloads WHERE note_id=?", [id], (downloadErr) => {
+      if (downloadErr) {
+        console.log(downloadErr);
+        res.status(500).send("Delete failed");
         return;
       }
 
-      db.query("DELETE FROM comments WHERE note_id=?", [id], (commentsErr) => {
-        if (commentsErr) {
-          console.log(commentsErr);
-          res.send("Delete failed");
+      db.query("DELETE FROM likes WHERE note_id=?", [id], (likesErr) => {
+        if (likesErr) {
+          console.log(likesErr);
+          res.status(500).send("Delete failed");
           return;
         }
 
-        db.query("DELETE FROM notes WHERE id=?", [id], (noteErr) => {
-          if (noteErr) {
-            console.log(noteErr);
-            res.send("Delete failed");
+        db.query("DELETE FROM comments WHERE note_id=?", [id], (commentsErr) => {
+          if (commentsErr) {
+            console.log(commentsErr);
+            res.status(500).send("Delete failed");
             return;
           }
-          res.send("Note Deleted");
+
+          db.query("DELETE FROM notes WHERE id=? AND user_email=?", [id, email], (noteErr, result) => {
+            if (noteErr) {
+              console.log(noteErr);
+              res.status(500).send("Delete failed");
+              return;
+            }
+
+            if (result.affectedRows === 0) {
+              res.status(403).send("You can only delete notes you uploaded");
+              return;
+            }
+
+            res.send("Note Deleted");
+          });
         });
       });
     });
@@ -576,8 +620,18 @@ app.post("/login", (req, res) => {
   const sql = "SELECT * FROM users WHERE email=? AND password=?";
 
   db.query(sql, [email, password], (err, result) => {
+    if (err) {
+      console.log(err);
+      res.status(500).send("Login failed");
+      return;
+    }
+
     if (result.length > 0) {
-      res.send("Login Success");
+      res.send({
+        message: "Login Success",
+        email: result[0].email,
+        authToken: createUserSession(result[0].email)
+      });
     } else {
       res.send("Invalid Login");
     }

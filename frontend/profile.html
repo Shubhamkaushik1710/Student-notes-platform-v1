@@ -404,6 +404,31 @@ font-size:12px;
 font-weight:800;
 }
 
+.note-actions{
+display:flex;
+gap:10px;
+flex-wrap:wrap;
+margin-top:auto;
+}
+
+.delete-note{
+border:none;
+border-radius:13px;
+padding:10px 13px;
+background:#fff4f4;
+color:#9a5c5c;
+border:1px solid rgba(154,92,92,0.14);
+font-size:13px;
+font-weight:800;
+cursor:pointer;
+transition:transform 0.2s ease,box-shadow 0.2s ease;
+}
+
+.delete-note:hover{
+transform:translateY(-1px);
+box-shadow:var(--shadow-sm);
+}
+
 .empty-state{
 padding:32px 24px;
 border-radius:18px;
@@ -511,6 +536,7 @@ h1,h2,h3,h4,h5,h6{color:#111111 !important;}
 <script>
 
 const email = localStorage.getItem("user_email")
+const authToken = localStorage.getItem("auth_token")
 
 if(!email){
 alert("Please Login first")
@@ -572,6 +598,9 @@ html += `
 <div class="note-card">
 <h4>${note.title}</h4>
 <div class="meta">${renderMeta(note)}</div>
+<div class="note-actions">
+<button class="delete-note" type="button" onclick="deleteProfileNote(${note.id})">Delete</button>
+</div>
 </div>
 `
 })
@@ -583,6 +612,32 @@ document.getElementById("notes").innerHTML = html
 }
 
 loadProfile()
+
+async function deleteProfileNote(id){
+if(!authToken){
+alert("Please log out and log in again before deleting notes.")
+return
+}
+
+const res = await fetch("http://localhost:3000/delete/"+id,{
+method:"DELETE",
+headers:{
+"Content-Type":"application/json"
+},
+body:JSON.stringify({
+email:email,
+authToken:authToken
+})
+})
+
+if(!res.ok){
+const message = await res.text()
+alert(message || "Delete failed")
+return
+}
+
+loadProfile()
+}
 
 </script>
 

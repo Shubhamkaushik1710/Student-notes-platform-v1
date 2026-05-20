@@ -1670,14 +1670,20 @@ h1,h2,h3,h4,h5,h6{color:#111111 !important;}
 
 <script>
 
-const oauthEmail = new URLSearchParams(window.location.search).get("oauthEmail")
+const oauthParams = new URLSearchParams(window.location.search)
+const oauthEmail = oauthParams.get("oauthEmail")
+const oauthToken = oauthParams.get("authToken")
 
 if(oauthEmail){
 localStorage.setItem("user_email",oauthEmail)
+if(oauthToken){
+localStorage.setItem("auth_token",oauthToken)
+}
 window.history.replaceState({},document.title,window.location.pathname)
 }
 
 const email = localStorage.getItem("user_email")
+const authToken = localStorage.getItem("auth_token")
 const isLoggedIn = Boolean(email)
 
 const authLock = document.getElementById("authLock")
@@ -1935,6 +1941,10 @@ const safeUploaderName = rawUploaderName && !rawUploaderName.includes("@")
 ? rawUploaderName
 : "Unknown user"
 const uploaderName = escapeHTML(safeUploaderName)
+const canDelete = isLoggedIn && normalizeValue(note.user_email).toLowerCase() === normalizeValue(email).toLowerCase()
+const deleteButtonHTML = canDelete
+? `<button class="btn btn-delete" onclick="deleteNote(${note.id})">Delete</button>`
+: ""
 
 const commentHTML = comments.length
 ? comments.map((comment) => `
@@ -1963,7 +1973,7 @@ return `
 <div class="action-buttons">
 <a class="btn btn-view" href="view.html?file=${encodeURIComponent(note.file)}&noteId=${encodeURIComponent(note.id)}">View</a>
 <button class="btn btn-like" onclick="likeNote(${note.id})">Like</button>
-<button class="btn btn-delete" onclick="deleteNote(${note.id})">Delete</button>
+${deleteButtonHTML}
 </div>
 
 <div>
@@ -2138,9 +2148,27 @@ if(!requireLogin("Please login first to delete notes.")){
 return
 }
 
-await fetch("http://localhost:3000/delete/"+id,{
-method:"DELETE"
+if(!authToken){
+alert("Please log out and log in again before deleting notes.")
+return
+}
+
+const res = await fetch("http://localhost:3000/delete/"+id,{
+method:"DELETE",
+headers:{
+"Content-Type":"application/json"
+},
+body:JSON.stringify({
+email:email,
+authToken:authToken
 })
+})
+
+if(!res.ok){
+const message = await res.text()
+alert(message || "Delete failed")
+return
+}
 
 loadNotes()
 }
@@ -2189,6 +2217,7 @@ return data
 
 function logout(){
 localStorage.removeItem("user_email")
+localStorage.removeItem("auth_token")
 window.location = "login.html"
 }
 

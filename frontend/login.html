@@ -448,9 +448,13 @@ const messageBox = document.getElementById("msg")
 const params = new URLSearchParams(window.location.search)
 const redirectTarget = params.get("redirect") || "notes.html"
 const oauthEmail = params.get("oauthEmail")
+const oauthToken = params.get("authToken")
 
 if(oauthEmail){
 localStorage.setItem("user_email",oauthEmail)
+if(oauthToken){
+localStorage.setItem("auth_token",oauthToken)
+}
 window.location.href = redirectTarget
 }
 
@@ -544,18 +548,28 @@ body:JSON.stringify({email,password}),
 signal:controller.signal
 })
 
-const data = await res.text()
+const responseText = await res.text()
+let data = responseText
+
+try{
+data = JSON.parse(responseText)
+}catch(error){
+data = responseText
+}
 
 if(!res.ok){
 throw new Error("Server returned an error")
 }
 
-if(data.includes("Login Success")){
-localStorage.setItem("user_email",email)
+if((typeof data === "string" && data.includes("Login Success")) || data.message === "Login Success"){
+localStorage.setItem("user_email",data.email || email)
+if(data.authToken){
+localStorage.setItem("auth_token",data.authToken)
+}
 showMessage("Login successful. Redirecting...","success")
 window.location.href = redirectTarget
 }else{
-showMessage(data || "Invalid email or password.","error")
+showMessage(typeof data === "string" ? data : "Invalid email or password.","error")
 setLoading(false)
 }
 }catch(error){

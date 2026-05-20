@@ -216,11 +216,16 @@ const urlParams = new URLSearchParams(window.location.search)
 const file = urlParams.get("file")
 const noteId = urlParams.get("noteId")
 const oauthEmail = urlParams.get("oauthEmail")
+const oauthToken = urlParams.get("authToken")
 const backendBaseUrl = "http://localhost:3000"
 
 if(oauthEmail){
 localStorage.setItem("user_email",oauthEmail)
+if(oauthToken){
+localStorage.setItem("auth_token",oauthToken)
+}
 urlParams.delete("oauthEmail")
+urlParams.delete("authToken")
 const cleanUrl = `${window.location.pathname}?${urlParams.toString()}`
 window.history.replaceState({},document.title,cleanUrl)
 }
