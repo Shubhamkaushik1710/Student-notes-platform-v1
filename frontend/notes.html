@@ -1195,6 +1195,53 @@ box-shadow:var(--shadow-sm);
 animation:card-rise 0.45s ease forwards;
 }
 
+.auth-lock{
+position:fixed;
+inset:auto 20px 20px auto;
+z-index:60;
+width:min(360px,calc(100% - 40px));
+padding:18px;
+border-radius:20px;
+background:rgba(255,255,255,0.96);
+border:1px solid rgba(58,111,168,0.12);
+box-shadow:var(--shadow-lg);
+display:none;
+gap:12px;
+align-items:flex-start;
+}
+
+.auth-lock.is-visible{
+display:grid;
+grid-template-columns:minmax(0,1fr) auto;
+}
+
+.auth-lock strong{
+display:block;
+font-size:15px;
+margin-bottom:4px;
+color:var(--primary);
+}
+
+.auth-lock p{
+font-size:13px;
+line-height:1.5;
+color:var(--ink-soft);
+}
+
+.auth-lock a{
+display:inline-flex;
+align-items:center;
+justify-content:center;
+padding:10px 12px;
+border-radius:12px;
+background:#5a9fd4;
+color:#ffffff;
+font-size:13px;
+font-weight:800;
+text-decoration:none;
+white-space:nowrap;
+}
+
 @keyframes card-rise{
 to{
 opacity:1;
@@ -1613,14 +1660,29 @@ h1,h2,h3,h4,h5,h6{color:#111111 !important;}
 
 </div>
 
+<div class="auth-lock" id="authLock" role="status" aria-live="polite">
+<div>
+<strong>Login first</strong>
+<p id="authLockMessage">Please login to continue with this note.</p>
+</div>
+<a id="authLockLink" href="login.html">Login</a>
+</div>
+
 <script>
 
-const email = localStorage.getItem("user_email")
+const oauthEmail = new URLSearchParams(window.location.search).get("oauthEmail")
 
-if(!email){
-alert("Please Login first")
-window.location = "login.html"
+if(oauthEmail){
+localStorage.setItem("user_email",oauthEmail)
+window.history.replaceState({},document.title,window.location.pathname)
 }
+
+const email = localStorage.getItem("user_email")
+const isLoggedIn = Boolean(email)
+
+const authLock = document.getElementById("authLock")
+const authLockMessage = document.getElementById("authLockMessage")
+const authLockLink = document.getElementById("authLockLink")
 
 const searchInput = document.getElementById("search")
 const courseFilter = document.getElementById("courseFilter")
@@ -1650,6 +1712,29 @@ const animatedPhrases = [
 "cleaner study flow",
 "faster exam prep"
 ]
+
+function getLoginUrl(){
+return `login.html?redirect=${encodeURIComponent(window.location.href)}`
+}
+
+function showLoginPrompt(message){
+authLockMessage.innerText = message || "Please login first."
+authLockLink.href = getLoginUrl()
+authLock.classList.add("is-visible")
+window.clearTimeout(showLoginPrompt.hideTimer)
+showLoginPrompt.hideTimer = window.setTimeout(() => {
+authLock.classList.remove("is-visible")
+},5000)
+}
+
+function requireLogin(message){
+if(isLoggedIn){
+return true
+}
+
+showLoginPrompt(message)
+return false
+}
 
 let allNotes = []
 const defaultCourses = ["BCA", "BBA", "BCom", "MCA"]
@@ -1956,6 +2041,10 @@ requestsInfo.innerText = "Loading failed"
 async function submitNoteRequest(event){
 event.preventDefault()
 
+if(!requireLogin("Please login first to request notes.")){
+return
+}
+
 const title = requestTitle.value.trim()
 
 if(!title){
@@ -2024,6 +2113,10 @@ loadNotes()
 loadNoteRequests()
 
 async function likeNote(id){
+if(!requireLogin("Please login first to like notes.")){
+return
+}
+
 await fetch("http://localhost:3000/like",{
 method:"POST",
 headers:{
@@ -2036,6 +2129,10 @@ loadNotes()
 }
 
 async function deleteNote(id){
+if(!requireLogin("Please login first to delete notes.")){
+return
+}
+
 await fetch("http://localhost:3000/delete/"+id,{
 method:"DELETE"
 })
@@ -2044,6 +2141,10 @@ loadNotes()
 }
 
 async function addComment(id){
+if(!requireLogin("Please login first to comment on notes.")){
+return
+}
+
 const input = document.getElementById("comment-"+id)
 const comment = input.value.trim()
 

@@ -275,6 +275,42 @@ opacity:0.72;
 box-shadow:none;
 }
 
+.social-login{
+display:grid;
+gap:10px;
+margin:4px 0 2px;
+}
+
+.social-login button{
+background:#ffffff;
+color:#111111;
+border:1px solid rgba(58,111,168,0.14);
+box-shadow:none;
+}
+
+.social-login button:hover{
+box-shadow:0 12px 24px rgba(58,111,168,0.12);
+}
+
+.divider{
+display:flex;
+align-items:center;
+gap:10px;
+color:var(--text-muted);
+font-size:12px;
+font-weight:700;
+text-transform:uppercase;
+letter-spacing:0.08em;
+}
+
+.divider::before,
+.divider::after{
+content:"";
+height:1px;
+flex:1;
+background:rgba(58,111,168,0.14);
+}
+
 .helper-links{
 display:flex;
 justify-content:space-between;
@@ -382,6 +418,11 @@ h1,h2,h3,h4,h5,h6{color:#111111 !important;}
 
 <div class="actions">
 <button type="submit" id="loginButton">Login</button>
+<div class="divider">or</div>
+<div class="social-login">
+<button type="button" onclick="startOAuth('google')">Sign in with Google</button>
+<button type="button" onclick="startOAuth('github')">Sign in with GitHub</button>
+</div>
 <p id="msg" role="status" aria-live="polite"></p>
 <div class="helper-links">
 <a href="register.html">Create an account</a>
@@ -404,6 +445,14 @@ const typeTarget = document.getElementById("typeText")
 const loginForm = document.getElementById("loginForm")
 const loginButton = document.getElementById("loginButton")
 const messageBox = document.getElementById("msg")
+const params = new URLSearchParams(window.location.search)
+const redirectTarget = params.get("redirect") || "notes.html"
+const oauthEmail = params.get("oauthEmail")
+
+if(oauthEmail){
+localStorage.setItem("user_email",oauthEmail)
+window.location.href = redirectTarget
+}
 
 let phraseIndex = 0
 let characterIndex = 0
@@ -448,6 +497,11 @@ messageBox.className = type || ""
 function setLoading(isLoading){
 loginButton.disabled = isLoading
 loginButton.innerText = isLoading ? "Logging in..." : "Login"
+}
+
+function startOAuth(provider){
+const redirectTo = new URL(redirectTarget,window.location.href).href
+window.location.href = `http://localhost:3000/auth/${provider}?redirectTo=${encodeURIComponent(redirectTo)}`
 }
 
 async function login(event){
@@ -499,7 +553,7 @@ throw new Error("Server returned an error")
 if(data.includes("Login Success")){
 localStorage.setItem("user_email",email)
 showMessage("Login successful. Redirecting...","success")
-window.location.href = "notes.html"
+window.location.href = redirectTarget
 }else{
 showMessage(data || "Invalid email or password.","error")
 setLoading(false)

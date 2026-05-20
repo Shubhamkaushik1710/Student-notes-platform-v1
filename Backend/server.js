@@ -3,12 +3,16 @@ const cors = require("cors");
 const multer = require("multer");
 const mysql = require("mysql2");
 const path = require("path");
+const crypto = require("crypto");
 
 const app = express();
 
 app.use(cors());
 app.use(express.json());
 app.use("/uploads", express.static("uploads"));
+
+const oauthStates = new Map();
+const frontendUrl = process.env.FRONTEND_URL || "http://localhost:5500/frontend";
 
 const db = mysql.createConnection({
   host: "localhost",
@@ -72,6 +76,72 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({ storage: storage });
+
+function findUserByEmail(email, callback) {
+  db.query("SELECT email FROM users WHERE email=?", [email], (err, result) => {
+    if (err) {
+      callback(err);
+      return;
+    }
+
+    callback(null, result.length > 0);
+  });
+}
+
+function ensureOAuthUser(name, email, provider, callback) {
+  const password = `${provider}-oauth-user`;
+
+  db.query("SELECT email FROM users WHERE email=?", [email], (selectErr, result) => {
+    if (selectErr) {
+      callback(selectErr);
+      return;
+    }
+
+    if (result.length > 0) {
+      callback(null);
+      return;
+    }
+
+    db.query(
+      "INSERT INTO users(name,email,password) VALUES (?,?,?)",
+      [name || provider, email, password],
+      callback
+    );
+  });
+}
+
+function createOAuthState(provider, redirectTo) {
+  const state = crypto.randomBytes(16).toString("hex");
+  oauthStates.set(state, {
+    provider,
+    redirectTo: redirectTo || `${frontendUrl}/notes.html`,
+    createdAt: Date.now()
+  });
+  return state;
+}
+
+function consumeOAuthState(state, provider) {
+  const entry = oauthStates.get(state);
+  oauthStates.delete(state);
+
+  if (!entry || entry.provider !== provider || Date.now() - entry.createdAt > 10 * 60 * 1000) {
+    return null;
+  }
+
+  return entry;
+}
+
+function redirectAfterOAuth(res, redirectTo, email) {
+  const url = new URL(redirectTo || `${frontendUrl}/notes.html`);
+  url.searchParams.set("oauthEmail", email);
+  res.redirect(url.toString());
+}
+
+function sendOAuthSetupMessage(res, provider) {
+  res.status(501).send(
+    `${provider} sign-in is ready in the app, but OAuth credentials are not configured on the backend yet.`
+  );
+}
 
 let noteSchemaSupport = null;
 
@@ -256,6 +326,7 @@ app.get("/comments/:id", (req, res) => {
 app.get("/download/:file", (req, res) => {
   const fileName = path.basename(req.params.file);
   const noteId = Number(req.query.noteId);
+  const email = (req.query.email || "").trim();
   const filePath = path.join(__dirname, "uploads", fileName);
 
   function sendFile() {
@@ -267,17 +338,188 @@ app.get("/download/:file", (req, res) => {
     });
   }
 
-  if (!Number.isInteger(noteId) || noteId <= 0) {
-    sendFile();
+  if (!email) {
+    res.status(401).send("Please login first to download notes");
     return;
   }
 
-  db.query("INSERT INTO note_downloads(note_id) VALUES (?)", [noteId], (err) => {
+  findUserByEmail(email, (userErr, userExists) => {
+    if (userErr) {
+      console.log(userErr);
+      res.status(500).send("Download failed");
+      return;
+    }
+
+    if (!userExists) {
+      res.status(401).send("Please login first to download notes");
+      return;
+    }
+
+    if (!Number.isInteger(noteId) || noteId <= 0) {
+      sendFile();
+      return;
+    }
+
+    db.query("INSERT INTO note_downloads(note_id) VALUES (?)", [noteId], (err) => {
+      if (err) {
+        console.log(err);
+      }
+      sendFile();
+    });
+  });
+});
+
+app.get("/auth/google", (req, res) => {
+  const clientId = process.env.GOOGLE_CLIENT_ID;
+  const clientSecret = process.env.GOOGLE_CLIENT_SECRET;
+
+  if (!clientId || !clientSecret) {
+    sendOAuthSetupMessage(res, "Google");
+    return;
+  }
+
+  const state = createOAuthState("google", req.query.redirectTo);
+  const redirectUri = process.env.GOOGLE_REDIRECT_URI || "http://localhost:3000/auth/google/callback";
+  const authUrl = new URL("https://accounts.google.com/o/oauth2/v2/auth");
+  authUrl.searchParams.set("client_id", clientId);
+  authUrl.searchParams.set("redirect_uri", redirectUri);
+  authUrl.searchParams.set("response_type", "code");
+  authUrl.searchParams.set("scope", "openid email profile");
+  authUrl.searchParams.set("state", state);
+  authUrl.searchParams.set("prompt", "select_account");
+  res.redirect(authUrl.toString());
+});
+
+app.get("/auth/google/callback", async (req, res) => {
+  const entry = consumeOAuthState(req.query.state, "google");
+
+  if (!entry) {
+    res.status(400).send("Invalid Google sign-in request");
+    return;
+  }
+
+  try {
+    const redirectUri = process.env.GOOGLE_REDIRECT_URI || "http://localhost:3000/auth/google/callback";
+    const tokenRes = await fetch("https://oauth2.googleapis.com/token", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({
+        code: req.query.code,
+        client_id: process.env.GOOGLE_CLIENT_ID,
+        client_secret: process.env.GOOGLE_CLIENT_SECRET,
+        redirect_uri: redirectUri,
+        grant_type: "authorization_code"
+      })
+    });
+    const tokenData = await tokenRes.json();
+    const profileRes = await fetch("https://www.googleapis.com/oauth2/v2/userinfo", {
+      headers: { Authorization: `Bearer ${tokenData.access_token}` }
+    });
+    const profile = await profileRes.json();
+
+    if (!profile.email) {
+      res.status(400).send("Google did not return an email address");
+      return;
+    }
+
+    ensureOAuthUser(profile.name, profile.email, "google", (err) => {
+      if (err) {
+        console.log(err);
+        res.status(500).send("Google sign-in failed");
+        return;
+      }
+
+      redirectAfterOAuth(res, entry.redirectTo, profile.email);
+    });
+  } catch (err) {
     if (err) {
       console.log(err);
     }
-    sendFile();
-  });
+    res.status(500).send("Google sign-in failed");
+  }
+});
+
+app.get("/auth/github", (req, res) => {
+  const clientId = process.env.GITHUB_CLIENT_ID;
+  const clientSecret = process.env.GITHUB_CLIENT_SECRET;
+
+  if (!clientId || !clientSecret) {
+    sendOAuthSetupMessage(res, "GitHub");
+    return;
+  }
+
+  const state = createOAuthState("github", req.query.redirectTo);
+  const redirectUri = process.env.GITHUB_REDIRECT_URI || "http://localhost:3000/auth/github/callback";
+  const authUrl = new URL("https://github.com/login/oauth/authorize");
+  authUrl.searchParams.set("client_id", clientId);
+  authUrl.searchParams.set("redirect_uri", redirectUri);
+  authUrl.searchParams.set("scope", "read:user user:email");
+  authUrl.searchParams.set("state", state);
+  res.redirect(authUrl.toString());
+});
+
+app.get("/auth/github/callback", async (req, res) => {
+  const entry = consumeOAuthState(req.query.state, "github");
+
+  if (!entry) {
+    res.status(400).send("Invalid GitHub sign-in request");
+    return;
+  }
+
+  try {
+    const redirectUri = process.env.GITHUB_REDIRECT_URI || "http://localhost:3000/auth/github/callback";
+    const tokenRes = await fetch("https://github.com/login/oauth/access_token", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json"
+      },
+      body: JSON.stringify({
+        code: req.query.code,
+        client_id: process.env.GITHUB_CLIENT_ID,
+        client_secret: process.env.GITHUB_CLIENT_SECRET,
+        redirect_uri: redirectUri
+      })
+    });
+    const tokenData = await tokenRes.json();
+    const profileRes = await fetch("https://api.github.com/user", {
+      headers: {
+        Authorization: `Bearer ${tokenData.access_token}`,
+        "User-Agent": "student-notes-platform"
+      }
+    });
+    const profile = await profileRes.json();
+    const emailRes = await fetch("https://api.github.com/user/emails", {
+      headers: {
+        Authorization: `Bearer ${tokenData.access_token}`,
+        "User-Agent": "student-notes-platform"
+      }
+    });
+    const emails = await emailRes.json();
+    const primaryEmail = Array.isArray(emails)
+      ? emails.find((item) => item.primary && item.verified) || emails.find((item) => item.verified)
+      : null;
+
+    if (!primaryEmail || !primaryEmail.email) {
+      res.status(400).send("GitHub did not return a verified email address");
+      return;
+    }
+
+    ensureOAuthUser(profile.name || profile.login, primaryEmail.email, "github", (err) => {
+      if (err) {
+        console.log(err);
+        res.status(500).send("GitHub sign-in failed");
+        return;
+      }
+
+      redirectAfterOAuth(res, entry.redirectTo, primaryEmail.email);
+    });
+  } catch (err) {
+    if (err) {
+      console.log(err);
+    }
+    res.status(500).send("GitHub sign-in failed");
+  }
 });
 
 app.delete("/delete/:id", (req, res) => {
