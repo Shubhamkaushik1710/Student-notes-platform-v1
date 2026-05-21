@@ -2186,16 +2186,23 @@ alert("Please write a comment")
 return
 }
 
-await fetch("http://localhost:3000/comment",{
+const res = await fetch("http://localhost:3000/comment",{
 method:"POST",
 headers:{
 "Content-Type":"application/json"
 },
 body:JSON.stringify({
 note_id:id,
-comment:comment
+comment:comment,
+email:email
 })
 })
+
+if(!res.ok){
+const message = await res.text()
+alert(message || "Comment failed")
+return
+}
 
 input.value = ""
 loadNotes()

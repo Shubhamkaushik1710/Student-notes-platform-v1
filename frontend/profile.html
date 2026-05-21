@@ -502,6 +502,14 @@ h1,h2,h3,h4,h5,h6{color:#111111 !important;}
 <strong id="heroNoteCount">0</strong>
 <span>Notes shared</span>
 </div>
+<div class="stat-pill">
+<strong id="heroRequestCount">0</strong>
+<span>Requests made</span>
+</div>
+<div class="stat-pill">
+<strong id="heroCommentCount">0</strong>
+<span>Comments written</span>
+</div>
 </div>
 </div>
 
@@ -529,6 +537,28 @@ h1,h2,h3,h4,h5,h6{color:#111111 !important;}
 <div id="notes"></div>
 </div>
 
+<div class="section">
+<div class="section-head">
+<div>
+<h2>Your Requests</h2>
+<p>Track the notes you have asked classmates to share.</p>
+</div>
+<span class="count-pill" id="requestsCount">0 requests</span>
+</div>
+<div id="requests"></div>
+</div>
+
+<div class="section">
+<div class="section-head">
+<div>
+<h2>Your Comments</h2>
+<p>Review comments you have added to shared notes.</p>
+</div>
+<span class="count-pill" id="commentsCount">0 comments</span>
+</div>
+<div id="comments"></div>
+</div>
+
 </div>
 
 </div>
@@ -543,6 +573,16 @@ alert("Please Login first")
 window.location = "login.html"
 }
 
+function escapeHTML(value){
+return String(value ?? "").replace(/[&<>"']/g,(char) => ({
+"&":"&amp;",
+"<":"&lt;",
+">":"&gt;",
+'"':"&quot;",
+"'":"&#039;"
+}[char]))
+}
+
 function noteMetaItems(note){
 return [note.course, note.semester, note.subject].filter(Boolean)
 }
@@ -552,35 +592,72 @@ const items = noteMetaItems(note)
 if(!items.length){
 return '<span>No subject</span>'
 }
-return items.map((item) => `<span>${item}</span>`).join("")
+return items.map((item) => `<span>${escapeHTML(item)}</span>`).join("")
+}
+
+function formatDate(value){
+if(!value){
+return "Recently"
+}
+
+const date = new Date(value)
+if(Number.isNaN(date.getTime())){
+return "Recently"
+}
+
+return date.toLocaleDateString(undefined,{
+month:"short",
+day:"numeric",
+year:"numeric"
+})
 }
 
 async function loadProfile(){
 
 const res = await fetch("http://localhost:3000/profile/"+email)
+if(!res.ok){
+const message = await res.text()
+alert(message || "Unable to load profile")
+return
+}
+
 const data = await res.json()
 
 const totalNotes = data.notes.length
+const totalRequests = (data.requests || []).length
+const totalComments = (data.comments || []).length
 
 document.getElementById("heroNoteCount").innerText = totalNotes
+document.getElementById("heroRequestCount").innerText = totalRequests
+document.getElementById("heroCommentCount").innerText = totalComments
 document.getElementById("notesCount").innerText = `${totalNotes} note${totalNotes === 1 ? "" : "s"}`
+document.getElementById("requestsCount").innerText = `${totalRequests} request${totalRequests === 1 ? "" : "s"}`
+document.getElementById("commentsCount").innerText = `${totalComments} comment${totalComments === 1 ? "" : "s"}`
 
 document.getElementById("profile").innerHTML = `
 <div class="profile-card">
 <div>
-<div class="avatar">${data.user.name ? data.user.name.charAt(0).toUpperCase() : "U"}</div>
-<p class="profile-name">${data.user.name}</p>
-<p class="profile-email">${data.user.email}</p>
+<div class="avatar">${escapeHTML(data.user.name ? data.user.name.charAt(0).toUpperCase() : "U")}</div>
+<p class="profile-name">${escapeHTML(data.user.name)}</p>
+<p class="profile-email">${escapeHTML(data.user.email)}</p>
 </div>
 
 <div class="profile-meta">
 <div class="meta-row">
 <strong>Registered Email</strong>
-<span>${data.user.email}</span>
+<span>${escapeHTML(data.user.email)}</span>
 </div>
 <div class="meta-row">
 <strong>Uploaded Notes</strong>
 <span>${totalNotes} total uploads</span>
+</div>
+<div class="meta-row">
+<strong>Note Requests</strong>
+<span>${totalRequests} total requests</span>
+</div>
+<div class="meta-row">
+<strong>Comments</strong>
+<span>${totalComments} total comments</span>
 </div>
 </div>
 </div>
@@ -588,15 +665,13 @@ document.getElementById("profile").innerHTML = `
 
 if(!totalNotes){
 document.getElementById("notes").innerHTML = '<div class="empty-state">You have not uploaded any notes yet.</div>'
-return
-}
-
+}else{
 let html = '<div class="notes-grid">'
 
 data.notes.forEach((note) => {
 html += `
 <div class="note-card">
-<h4>${note.title}</h4>
+<h4>${escapeHTML(note.title)}</h4>
 <div class="meta">${renderMeta(note)}</div>
 <div class="note-actions">
 <button class="delete-note" type="button" onclick="deleteProfileNote(${note.id})">Delete</button>
@@ -608,10 +683,66 @@ html += `
 html += "</div>"
 
 document.getElementById("notes").innerHTML = html
+}
+
+if(!totalRequests){
+document.getElementById("requests").innerHTML = '<div class="empty-state">You have not requested any notes yet.</div>'
+}else{
+let requestHTML = '<div class="notes-grid">'
+
+data.requests.forEach((request) => {
+requestHTML += `
+<div class="note-card">
+<h4>${escapeHTML(request.title)}</h4>
+<div class="meta">${renderMeta(request)}</div>
+${request.details ? `<p>${escapeHTML(request.details)}</p>` : ""}
+<p class="profile-email">${escapeHTML(formatDate(request.created_at))}</p>
+<div class="note-actions">
+<button class="delete-note" type="button" onclick="deleteProfileRequest(${request.id})">Delete</button>
+</div>
+</div>
+`
+})
+
+requestHTML += "</div>"
+
+document.getElementById("requests").innerHTML = requestHTML
+}
+
+if(!totalComments){
+document.getElementById("comments").innerHTML = '<div class="empty-state">You have not commented on any notes yet.</div>'
+}else{
+let commentHTML = '<div class="notes-grid">'
+
+data.comments.forEach((comment) => {
+const noteTitle = comment.note_title || "Deleted note"
+commentHTML += `
+<div class="note-card">
+<h4>${escapeHTML(noteTitle)}</h4>
+<p>${escapeHTML(comment.comment)}</p>
+<div class="meta"><span>${escapeHTML(formatDate(comment.created_at))}</span></div>
+<div class="note-actions">
+<button class="delete-note" type="button" onclick="deleteProfileComment(${comment.id})">Delete</button>
+</div>
+</div>
+`
+})
+
+commentHTML += "</div>"
+
+document.getElementById("comments").innerHTML = commentHTML
+}
 
 }
 
 loadProfile()
+
+function getDeletePayload(){
+return JSON.stringify({
+email:email,
+authToken:authToken
+})
+}
 
 async function deleteProfileNote(id){
 if(!authToken){
@@ -624,10 +755,53 @@ method:"DELETE",
 headers:{
 "Content-Type":"application/json"
 },
-body:JSON.stringify({
-email:email,
-authToken:authToken
+body:getDeletePayload()
 })
+
+if(!res.ok){
+const message = await res.text()
+alert(message || "Delete failed")
+return
+}
+
+loadProfile()
+}
+
+async function deleteProfileRequest(id){
+if(!authToken){
+alert("Please log out and log in again before deleting requests.")
+return
+}
+
+const res = await fetch("http://localhost:3000/note-request/"+id,{
+method:"DELETE",
+headers:{
+"Content-Type":"application/json"
+},
+body:getDeletePayload()
+})
+
+if(!res.ok){
+const message = await res.text()
+alert(message || "Delete failed")
+return
+}
+
+loadProfile()
+}
+
+async function deleteProfileComment(id){
+if(!authToken){
+alert("Please log out and log in again before deleting comments.")
+return
+}
+
+const res = await fetch("http://localhost:3000/comment/"+id,{
+method:"DELETE",
+headers:{
+"Content-Type":"application/json"
+},
+body:getDeletePayload()
 })
 
 if(!res.ok){
